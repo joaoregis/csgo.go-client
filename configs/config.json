@@ -1,0 +1,30 @@
+{
+    "reloadKey": "Insert",
+    "stopKey": "Delete",
+    "radar": {
+        "enabled": true
+    },
+    "engineChams": {
+        "enabled": false
+    },
+    "glow": {
+        "enabled": true,
+        "glowAlpha": 0.7,
+        "glowBaseColor": "#F000FF",
+        "healthBased": true
+    },
+    "bhop": {
+        "enabled": false,
+        "key": "Space"
+    },
+    "trigger": {
+        "enabled": false,
+        "key": "Mouse 5"
+    },
+    "aimbot": {
+        "enabled": false,
+        "key": "Mouse 4",
+        "fov": 12.0,
+        "smooth": 24.0
+    }
+}

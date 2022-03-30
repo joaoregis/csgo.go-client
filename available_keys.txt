@@ -1,0 +1,129 @@
+#-- these are the keys that are available for use in config files (like keybinds etc.)          --#
+#-- please, make sure to use the key name exactly as described in this file, or it will fail.   --#
+
+Numpad +
+Backspace
+Pause Break
+Numpad .
+Numpad /
+Esc
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+Numpad *
+Numpad 0
+Numpad 1
+Numpad 2
+Numpad 3
+Numpad 4
+Numpad 5
+Numpad 6
+Numpad 7
+Numpad 8
+Numpad 9
+;
+<
+/
+`
+[
+|
+]
+!
+<
+-
+>
+=
+Enter
+Space
+Numpad -
+Tab
+Context Menu
+Caps Lock
+Delete
+Arrow Down
+End
+F1
+F10
+F11
+F12
+F13
+F14
+F15
+F16
+F17
+F18
+F19
+F2
+F20
+F21
+F22
+F23
+F24
+F3
+F4
+F5
+F6
+F7
+F8
+F9
+Home
+Insert
+Mouse 1
+Left Ctrl
+Arrow Left
+Left Alt
+Left Shift
+Left Win
+Mouse 3
+Page Down
+Numpad Lock
+Pause
+Print
+Page Up
+Mouse 2
+Right Ctrl
+Arrow Right
+Right Alt
+Right Shift
+Right Win
+Scroll Lock
+Print Screen
+Arrow Up
+Volume Down
+Volume Mute
+Volume Up
+Mouse 4
+Mouse 5
