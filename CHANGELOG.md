@@ -1,3 +1,9 @@
+## v0.0.2 (03-30-2022)
+- Added new remote source for game offsets
+- Improve enginechams to clear residues during client exiting
+- Added mechanisms of graceful exiting when user aborts the program
+- Added the same graceful behavior when csgo game closes
+
 ## v0.0.1 (03-30-2022)
 - The very first release
 - This is a migration project between repos, so from the previous verson we had adding some new things:
