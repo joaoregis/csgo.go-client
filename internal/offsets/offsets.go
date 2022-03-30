@@ -5,30 +5,30 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
+	"net/http"
 )
+
+const uri string = "https://raw.githubusercontent.com/frk1/hazedumper/master/csgo.min.json"
 
 func InitOffsets(o *GameOffset) {
 
-	file, err := os.Open("./configs/csgo.json")
+	fmt.Println("getting updated offsets from source ...")
+	resp, err := http.Get(uri)
 	if err != nil {
-		log.Fatal(err)
-		panic("could not get offsets from specified source")
+		log.Fatalln(err)
+		panic("cannot get updated offsets. aborting ...")
 	}
 
-	defer func() {
-		if err = file.Close(); err != nil {
-			log.Fatal(err)
-			panic("could not get offsets from specified source")
-		}
-	}()
-
-	b, err := ioutil.ReadAll(file)
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+		panic("cannot read offsets. aborting ...")
+	}
 
 	err = json.Unmarshal(b, o)
 	if err != nil {
 		fmt.Println(err)
-		panic("could not decode game offsets")
+		panic("could not decode game offsets. aborting ...")
 	}
 
 }
