@@ -21,7 +21,7 @@ func Visuals() {
 		}
 
 		if configs.G.Radar.Enabled {
-			Radar(i)
+			Radar(entity)
 		}
 
 		EngineChams(entity)
