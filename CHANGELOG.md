@@ -1,5 +1,9 @@
 # Changelog for Client Updates
 
+## v0.0.4 (03-31-2022)
+
+- Compiled binaries for latest GoLang build (1.18)
+
 ## v0.0.3 (03-31-2022)
 
 - Added pattern scanning for main features to keep game offsets up-to-date
