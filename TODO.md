@@ -1,11 +1,14 @@
 # TODO List for future updates
 
 - Config updater to prevent broken configs
-- Improve triggerbot adding delayed trigger  
-- Multiple improves to aimbot like multi-hitbox aimbot spots and nearest aimbot mechanism
+
+- Add multi-hitbox aimbot spots
+- Add nearest aimbot mechanism
+- Add non-sticky aimbot
+- Add option to select aimbot hitbox
+
 - Add some protections against VAC for external mode client
 - Add a basic interface to interact with client configs
-- Add new mechanisms of pattern scan for core-features to prevent client to broken at every CSGO update
 - Log errors to a output file to track bugs and fails
 - Made the client internal or even kernel-mode driver
 - Move functionalities to SDK made in GoLang
