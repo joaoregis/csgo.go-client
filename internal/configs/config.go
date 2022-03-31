@@ -30,12 +30,18 @@ type Config struct {
 	Triggerbot struct {
 		Enabled bool   `json:"enabled"`
 		Key     string `json:"key"`
+		Delay   uint   `json:"delayInMs"`
 	} `json:"trigger"`
+	AutoWeapons struct {
+		Enabled bool `json:"enabled"`
+		Delay   uint `json:"delayInMs"`
+	} `json:"autoWeapons"`
 	Aimbot struct {
-		Enabled bool    `json:"enabled"`
-		Key     string  `json:"key"`
-		Fov     float64 `json:"fov"`
-		Smooth  float64 `json:"smooth"`
+		Enabled      bool    `json:"enabled"`
+		Key          string  `json:"key"`
+		Fov          float64 `json:"fov"`
+		Smooth       float64 `json:"smooth"`
+		NonStickyAim bool    `json:"nonStickyAim"`
 	} `json:"aimbot"`
 }
 
