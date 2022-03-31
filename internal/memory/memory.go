@@ -392,6 +392,11 @@ func (p *Process) WriteFloats(address uintptr, data []float32) error {
 	return nil
 }
 
+func (p *Process) FindOffset(mod Module, pattern string, dereference bool, offset int, extra int) (uintptr, error) {
+	addr, err := p.AOBScan(mod, pattern, dereference, offset, extra)
+	return addr - mod.ModBaseAddr, err
+}
+
 func (p *Process) AOBScan(mod Module, pattern string, dereference bool, offset int, extra int) (uintptr, error) {
 	// Credits to Rake @ https://guidedhacking.com/threads/external-internal-pattern-scanning-guide.14112/
 

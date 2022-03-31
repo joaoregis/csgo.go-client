@@ -14,6 +14,7 @@ import (
 )
 
 var ShouldContinue = true
+var found = false
 
 func main() {
 
@@ -44,11 +45,32 @@ func main() {
 	fmt.Println("reading user configs")
 	configs.Read()
 
+	fmt.Println("scanning for new game patterns")
+	updateOffsetsByPatterns()
+
 	// Mainloop
+	tries := 0
 	fmt.Println("everything is fine. good hacking.")
 	for ShouldContinue {
 
-		go checkCsgoProcess(&ShouldContinue)
+		if !found {
+
+			for configs.Offsets.Signatures.DwEntityList == 0x0 {
+
+				if tries > 10 {
+					panic("could not find updated offsets ...")
+					return
+				}
+
+				fmt.Println("trying to recover updated offsets ...")
+				updateOffsetsByPatterns()
+				time.Sleep(200 * time.Millisecond)
+				tries++
+			}
+
+			found = true
+
+		}
 
 		if csgo.UpdatePlayerVars() != nil {
 			continue
@@ -83,10 +105,22 @@ func endCheat() {
 	features.ClearEngineChams()
 }
 
-func checkCsgoProcess(sc *bool) {
-	if !memory.Init() {
-		fmt.Println("game has been closed.")
-		endCheat()
-		*sc = false
+func updateOffsetsByPatterns() {
+
+	var patterns = map[string]string{
+		"DwEntityList":        "BB ? ? ? ? 83 FF 01 0F 8C ? ? ? ? 3B F8",
+		"DwForceAttack":       "89 0D ? ? ? ? 8B 0D ? ? ? ? 8B F2 8B C1 83 CE 04",
+		"DwForceJump":         "8B 0D ? ? ? ? 8B D6 8B C1 83 CA 02",
+		"DwLocalPlayer":       "8D 34 85 ? ? ? ? 89 15 ? ? ? ? 8B 41 08 8B 48 04 83 F9 FF",
+		"DwGlowObjectManager": "A1 ? ? ? ? A8 01 75 4B",
+		"DwClientState":       "A1 ? ? ? ? 33 D2 6A 00 6A 00 33 C9 89 B0",
 	}
+
+	configs.Offsets.Signatures.DwEntityList, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwEntityList"], true, 0x1, 0x0)
+	configs.Offsets.Signatures.DwForceAttack, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwForceAttack"], true, 0x2, 0x0)
+	configs.Offsets.Signatures.DwForceJump, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwForceJump"], true, 0x2, 0x0)
+	configs.Offsets.Signatures.DwLocalPlayer, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwLocalPlayer"], true, 0x3, 0x4)
+	configs.Offsets.Signatures.DwGlowObjectManager, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwGlowObjectManager"], true, 0x1, 0x4)
+	configs.Offsets.Signatures.DwClientState, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Engine], patterns["DwClientState"], true, 0x1, 0x0)
+
 }
