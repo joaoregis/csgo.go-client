@@ -18,7 +18,7 @@
         "healthBased": true
     },
     "bhop": {
-        "enabled": false,
+        "enabled": true,
         "key": "Space"
     },
     "trigger": {
