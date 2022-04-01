@@ -8,6 +8,8 @@
 - Add option to select aimbot hitbox
 
 - Add new feature "RCS"
+- Add Auto-Zeus
+- Add Auto-Knife
 
 - Add some protections against VAC for external mode client
 - Add a basic interface to interact with client configs

@@ -1,5 +1,14 @@
 # Changelog for Client Updates
 
+## v0.0.5 (01-04-2022)
+
+- Now, the client will check if CSGO is on focus (Foreground window) to prevent hack from perform invalid actions when the game is minimized
+- Massively config changes to make it cleaner and understandable
+- Improve mechanisms to detect when the client go exit and make a "graceful" exiting
+- Improve aimbot system to make sure that active weapon is a valid weapon and prevent from aimboting using Zeus, Knifes and any other "invalid" weapon
+- Improve trigger to make sure that active weapon is a valid weapon and prevent from triggering using Zeus, Knifes and any other "invalid" weapon (In the near future, the client will receive new features like "Auto Zeus" and "Auto Knifebot" to replace old mechanism with triggerbot)
+- Added new feature "Automatic Weapons" that allows you to constantly fire weapons that are semi-auto (pistols) with configurable delay between shots
+
 ## v0.0.4 (03-31-2022)
 
 - Compiled binaries for latest GoLang build (1.18)
