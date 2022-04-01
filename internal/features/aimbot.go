@@ -89,7 +89,16 @@ func AimbotAt(closestEnemy uintptr) {
 
 func Aimbot() {
 
-	if !configs.G.Aimbot.Enabled || !kb.GetAsyncKeyState(kb.GetKey(configs.G.Aimbot.Key)) {
+	if !configs.G.Aimbot.Enabled {
+		return
+	}
+
+	hWId, _ := csgo.GetActiveWeapon()
+	if !csgo.IsAimbotable(hWId) {
+		return
+	}
+
+	if !kb.GetAsyncKeyState(kb.GetKey(configs.G.Aimbot.Key)) {
 		return
 	}
 
