@@ -25,13 +25,15 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 
 	go func() {
-		select {
-		case sig := <-c:
+
+		sig := <-c
+		if sig == os.Interrupt {
 			fmt.Println("operation aborted by user. closing client.", sig)
 			endCheat()
 			ShouldContinue = false
 			os.Exit(1)
 		}
+
 	}()
 
 	fmt.Println("getting latest offsets for current game version")
@@ -106,7 +108,6 @@ func main() {
 		/*
 			> check equipped weapon to make sure to allow this only when weapon is not automatic
 			> check when revolver is equipped to prevent from "stuck" revolver firing
-
 		*/
 		if configs.G.AutoWeapons.Enabled {
 			elapsed := time.Since(t).Milliseconds()
