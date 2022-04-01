@@ -17,6 +17,11 @@ func Triggerbot() {
 		return
 	}
 
+	hWId, _ := csgo.GetActiveWeapon()
+	if !csgo.IsAimbotable(hWId) {
+		return
+	}
+
 	if csgo.MaxPlayers <= 0 || csgo.LocalEntity == 0 {
 		return
 	}
