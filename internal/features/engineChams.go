@@ -25,7 +25,7 @@ func ClearEngineChams() {
 
 func EngineChams(entity uintptr) {
 
-	if !configs.G.EngineChams.Enabled {
+	if !configs.G.EngineChams {
 
 		memory.GameProcess.WriteBytes(entity+configs.Offsets.Netvars.MClrRender, csgo.CLRColorRender{
 			R: 255,

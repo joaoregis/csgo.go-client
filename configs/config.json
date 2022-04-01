@@ -1,25 +1,18 @@
 {
     "reloadKey": "Insert",
     "stopKey": "Delete",
-    "radar": {
-        "enabled": true
-    },
+    "bhop": true,
+    "radar": true,
+    "engineChams": false,
     "autoWeapons": {
-        "enabled": false,
+        "enabled": true,
         "delayInMs": 0
-    },
-    "engineChams": {
-        "enabled": false
     },
     "glow": {
         "enabled": true,
         "glowAlpha": 0.7,
         "glowBaseColor": "#F000FF",
         "healthBased": true
-    },
-    "bhop": {
-        "enabled": true,
-        "key": "Space"
     },
     "trigger": {
         "enabled": true,

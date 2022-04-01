@@ -20,7 +20,7 @@ func Visuals() {
 			Glow(entity)
 		}
 
-		if configs.G.Radar.Enabled {
+		if configs.G.Radar {
 			Radar(entity)
 		}
 

@@ -9,24 +9,17 @@ import (
 )
 
 type Config struct {
-	ReloadKey string `json:"reloadKey"`
-	StopKey   string `json:"stopKey"`
-	Radar     struct {
-		Enabled bool `json:"enabled"`
-	} `json:"radar"`
-	EngineChams struct {
-		Enabled bool `json:"enabled"`
-	} `json:"engineChams"`
-	Glow struct {
+	ReloadKey   string `json:"reloadKey"`
+	StopKey     string `json:"stopKey"`
+	Radar       bool   `json:"radar"`
+	EngineChams bool   `json:"engineChams"`
+	Bunnyhop    bool   `json:"bhop"`
+	Glow        struct {
 		Enabled       bool    `json:"enabled"`
 		BaseColor     string  `json:"glowBaseColor"`
 		Alpha         float32 `json:"glowAlpha"`
 		IsHealthBased bool    `json:"healthBased"`
 	} `json:"glow"`
-	Bunnyhop struct {
-		Enabled bool   `json:"enabled"`
-		Key     string `json:"key"`
-	} `json:"bhop"`
 	Triggerbot struct {
 		Enabled bool   `json:"enabled"`
 		Key     string `json:"key"`
