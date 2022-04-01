@@ -20,10 +20,9 @@
         "delayInMs": 125
     },
     "aimbot": {
-        "enabled": true,
+        "enabled": false,
         "key": "Mouse 5",
         "fov": 35.0,
-        "smooth": 1.0,
-        "nonStickyAim": false
+        "smooth": 1.0
     }
 }
