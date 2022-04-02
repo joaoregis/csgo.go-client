@@ -97,11 +97,17 @@ func main() {
 			ShouldContinue = false
 		}
 
-		features.AutoWeapons()
-		features.Triggerbot()
-		features.BunnyHop()
 		features.Visuals()
-		features.Aimbot()
+
+		// skip these features when cursor is enabled
+		if !csgo.IsCursorEnabled() {
+
+			features.AutoWeapons()
+			features.Triggerbot()
+			features.BunnyHop()
+			features.Aimbot()
+
+		}
 
 		if !ShouldContinue {
 			break

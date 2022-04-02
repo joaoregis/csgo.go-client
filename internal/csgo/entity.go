@@ -55,6 +55,16 @@ func GetLocalPlayer() (uintptr, error) {
 	return player, nil
 }
 
+func IsCursorEnabled() bool {
+
+	hDwMouseEnable, _ := memory.GameProcess.ReadInt(memory.GameClient + configs.Offsets.Signatures.DwMouseEnable)
+	hDwMouseEnablePtr, _ := memory.GameProcess.ReadInt(memory.GameClient + configs.Offsets.Signatures.DwMouseEnablePtr)
+	hDwMouseEnabledValue, _ := memory.GameProcess.ReadInt(uintptr(hDwMouseEnable))
+	IsMouseCursorEnabled := (hDwMouseEnabledValue == hDwMouseEnablePtr)
+	return IsMouseCursorEnabled
+
+}
+
 func GetActiveWeapon() (int, error) {
 
 	dwLocalPlayer, _ := GetLocalPlayer()
