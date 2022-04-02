@@ -1,5 +1,22 @@
 # Changelog for Client Updates
 
+## v0.1.0 (02-04-2022)
+
+> Note: That is a BIG update since first release.
+
+- All config system has been recoded from scratch.
+- Added protected configs to prevent user changes (disabled for now, until custom GUI for configs be done)
+- Added HWID-based configs, it means that your config is linked to your hardware id and always will be
+- Discountinued support for old config formats
+- Added config versioning to prevent fails due to not up-to-date configs
+- Added encryption on a several code parts related to user data
+- Now the `configs` folder doesn't exists anymore, and configs will be stored at default `Documents` path of your windows user
+- Client has been changed to executes in x86 (32 bits) mode to prevent inconsistencies across process
+- Added tons of checks and improvements across the code to prevent crashs and bugs
+- Fixed an issue with AutoWeapons that make the feature force to firing when you shouldn't actually fire. This issue is mainly related to the buy menu of CSGO, but it occours always that mouse cursor were visible. Now, that was fixed.
+- Randomized some strings and filenames on build to improve security.
+- Added a lot of encrypting and hashing logic to several parts of the code to improve security against data leaks
+
 ## v0.0.5 (01-04-2022)
 
 - Now, the client will check if CSGO is on focus (Foreground window) to prevent hack from perform invalid actions when the game is minimized
