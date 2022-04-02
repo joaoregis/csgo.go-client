@@ -33,9 +33,17 @@ func Reload() {
 	fmt.Println("config reloaded successfully.")
 }
 
+func getDirPath() string {
+	return global.USER_HOME_PATH
+}
+
+func getFilePath() string {
+	return path.Join(getDirPath(), global.CONFIG_NAME)
+}
+
 func write() error {
 
-	path := path.Join(global.USER_HOME_PATH, global.CONFIG_NAME)
+	path := getFilePath()
 	var err error
 	var file *os.File
 	var j []byte
@@ -89,7 +97,7 @@ func read() error {
 
 	var err error
 
-	path := path.Join(global.USER_HOME_PATH, global.CONFIG_NAME)
+	path := getFilePath()
 	file, _ := os.Open(path)
 	j, _ := ioutil.ReadAll(file)
 

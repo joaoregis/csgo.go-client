@@ -1,6 +1,8 @@
 package global
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"os"
 	"os/user"
 	"path"
@@ -9,7 +11,8 @@ import (
 
 func GetUserHomePath() string {
 	u, _ := user.Current()
-	documentsPath, _ := filepath.Abs(path.Join(u.HomeDir, "Documents", HARDWARE_ID[16:32]))
+	clientHwidHash := fmt.Sprintf("%x", sha256.Sum256([]byte(HARDWARE_ID)))
+	documentsPath, _ := filepath.Abs(path.Join(u.HomeDir, "Documents", clientHwidHash[16:32]))
 	if _, err := os.Stat(documentsPath); os.IsNotExist(err) {
 		// creating default client directory if not exists yet
 		os.Mkdir(documentsPath, os.ModeDir)
@@ -26,9 +29,12 @@ func IsConfigExists() bool {
 }
 
 func GetConfigName() string {
+
 	if DEBUG_MODE {
-		return HARDWARE_ID[:16] + "-dbg"
+		clientHwidHash := fmt.Sprintf("%x", sha256.Sum256([]byte(HARDWARE_ID+"-dbg")))
+		return clientHwidHash[:16]
 	}
 
-	return HARDWARE_ID[:16]
+	clientHwidHash := fmt.Sprintf("%x", sha256.Sum256([]byte(HARDWARE_ID)))
+	return clientHwidHash[:16]
 }
