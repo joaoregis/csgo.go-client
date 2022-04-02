@@ -1,8 +1,8 @@
 package features
 
 import (
-	c "gosource/internal/configs"
 	"gosource/internal/csgo"
+	c "gosource/internal/global/configs"
 	kb "gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/memory"
 	"time"
@@ -13,7 +13,7 @@ var triggerbotDelayCounter_Registered bool = false
 
 func Triggerbot() {
 
-	if !c.G.Triggerbot.Enabled {
+	if !c.G.D.Triggerbot.Enabled {
 		return
 	}
 
@@ -34,7 +34,7 @@ func Triggerbot() {
 		return
 	}
 
-	isHotkeyPressed := kb.GetAsyncKeyState(kb.GetKey(c.G.Triggerbot.Key))
+	isHotkeyPressed := kb.GetAsyncKeyState(kb.GetKey(c.G.D.Triggerbot.Key))
 
 	if !isHotkeyPressed {
 		triggerbotDelayCounter_Registered = false
@@ -57,7 +57,7 @@ func Triggerbot() {
 
 	if shouldShot {
 
-		if c.G.Triggerbot.Delay > 0 {
+		if c.G.D.Triggerbot.Delay > 0 {
 			if !triggerbotDelayCounter_Registered {
 
 				triggerbotDelayCounter_Registered = true
@@ -68,7 +68,7 @@ func Triggerbot() {
 
 			} else {
 				elapsed := time.Since(triggerbotDelayCounter).Milliseconds()
-				if elapsed <= int64(c.G.Triggerbot.Delay) {
+				if elapsed <= int64(c.G.D.Triggerbot.Delay) {
 					// return to prevent trigger from firing before estabilished delay
 					return
 				} else {

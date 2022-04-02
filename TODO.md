@@ -1,13 +1,11 @@
 # TODO List for future updates
 
-- Config updater to prevent broken configs
-
 - Add multi-hitbox aimbot spots
 - Add nearest aimbot mechanism
 - Add non-sticky aimbot
 - Add option to select aimbot hitbox
 
-- Add new feature "RCS"
+- Add RCS
 - Add Auto-Zeus
 - Add Auto-Knife
 

@@ -1,4 +1,6 @@
 vendor
 *.exe
 *.rar
+/bin
 configs/config.json
+internal/global/constants.go

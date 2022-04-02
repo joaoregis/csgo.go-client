@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"gosource/internal/configs"
 	"gosource/internal/csgo"
 	"gosource/internal/features"
+	"gosource/internal/global"
+	"gosource/internal/global/configs"
+	"gosource/internal/global/utils"
 	"gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/memory"
 	"gosource/internal/offsets"
@@ -14,10 +16,17 @@ import (
 	"time"
 )
 
+var (
+	PROJECT_NAME    = "CSGO.GO"
+	BUILD_TIMESTAMP = "development"
+)
+
 var ShouldContinue = true
 var found = false
 
 func main() {
+
+	utils.SetConsoleTitle(PROJECT_NAME + " - build: " + BUILD_TIMESTAMP)
 
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt)
@@ -34,6 +43,16 @@ func main() {
 
 	}()
 
+	if global.DEBUG_MODE {
+
+		fmt.Println("=====================================================================================")
+		fmt.Println("hardware id: ", global.HARDWARE_ID)
+		fmt.Println("default dir: ", global.USER_HOME_PATH)
+		fmt.Println("config file: ", global.CONFIG_NAME)
+		fmt.Println("=====================================================================================")
+
+	}
+
 	fmt.Println("getting latest offsets for current game version")
 	offsets.InitOffsets(&configs.Offsets)
 
@@ -45,8 +64,8 @@ func main() {
 		time.Sleep(1000 * time.Millisecond)
 	}
 
-	fmt.Println("reading user configs")
-	configs.Read()
+	fmt.Println("initializing user configs")
+	configs.Init()
 
 	fmt.Println("scanning for new game patterns")
 	updateOffsetsByPatterns()
@@ -89,11 +108,11 @@ func main() {
 			continue
 		}
 
-		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.ReloadKey)) {
-			configs.Read()
+		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.D.ReloadKey)) {
+			configs.Reload()
 		}
 
-		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.StopKey)) {
+		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.D.StopKey)) {
 			ShouldContinue = false
 		}
 

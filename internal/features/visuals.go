@@ -1,8 +1,8 @@
 package features
 
 import (
-	"gosource/internal/configs"
 	"gosource/internal/csgo"
+	"gosource/internal/global/configs"
 )
 
 func Visuals() {
@@ -16,11 +16,11 @@ func Visuals() {
 
 		entity, _ := csgo.GetPlayerByIndex(i)
 
-		if configs.G.Glow.Enabled {
+		if configs.G.D.Glow.Enabled {
 			Glow(entity)
 		}
 
-		if configs.G.Radar {
+		if configs.G.D.Radar {
 			Radar(entity)
 		}
 

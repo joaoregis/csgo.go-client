@@ -1,8 +1,17 @@
 package main
 
-import "os"
+import (
+	"fmt"
+	"gosource/internal/global"
+	"os/user"
+	"path"
+	"path/filepath"
+)
 
 func main() {
 
-	os.Exit(1)
+	u, _ := user.Current()
+	documentsPath, _ := filepath.Abs(path.Join(u.HomeDir, "Documents", global.CONFIG_NAME))
+	fmt.Println(documentsPath)
+
 }

@@ -1,8 +1,8 @@
 package csgo
 
 import (
-	"gosource/internal/configs"
 	"gosource/internal/csgo/weapons"
+	"gosource/internal/global/configs"
 	"gosource/internal/hackFunctions/vector"
 	"gosource/internal/memory"
 	"math"

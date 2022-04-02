@@ -1,8 +1,8 @@
 package features
 
 import (
-	"gosource/internal/configs"
 	"gosource/internal/csgo"
+	"gosource/internal/global/configs"
 	"gosource/internal/memory"
 )
 
@@ -25,7 +25,7 @@ func ClearEngineChams() {
 
 func EngineChams(entity uintptr) {
 
-	if !configs.G.EngineChams {
+	if !configs.G.D.EngineChams {
 
 		memory.GameProcess.WriteBytes(entity+configs.Offsets.Netvars.MClrRender, csgo.CLRColorRender{
 			R: 255,

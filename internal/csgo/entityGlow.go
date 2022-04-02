@@ -3,7 +3,7 @@ package csgo
 import (
 	"bytes"
 	"encoding/binary"
-	"gosource/internal/configs"
+	"gosource/internal/global/configs"
 	"gosource/internal/memory"
 	"unsafe"
 )

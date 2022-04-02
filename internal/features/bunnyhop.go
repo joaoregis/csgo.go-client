@@ -1,8 +1,8 @@
 package features
 
 import (
-	c "gosource/internal/configs"
 	"gosource/internal/csgo"
+	c "gosource/internal/global/configs"
 	kb "gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/memory"
 )
@@ -16,7 +16,7 @@ const (
 
 func BunnyHop() {
 
-	if c.G.Bunnyhop {
+	if c.G.D.Bunnyhop {
 
 		if jumping, _ := memory.GameProcess.ReadInt(memory.GameClient + c.Offsets.Signatures.DwForceJump); jumping == 5 {
 

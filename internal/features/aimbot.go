@@ -1,8 +1,8 @@
 package features
 
 import (
-	"gosource/internal/configs"
 	"gosource/internal/csgo"
+	"gosource/internal/global/configs"
 	kb "gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/hackFunctions/vector"
 	"gosource/internal/memory"
@@ -17,7 +17,7 @@ func distance(x1 float64, y1 float64, x2 float64, y2 float64) float64 {
 func getSmoothedValue(target float64, origin float64) float64 {
 	differenceBetween2 := target - origin
 
-	return origin + differenceBetween2/configs.G.Aimbot.Smooth
+	return origin + differenceBetween2/configs.G.D.Aimbot.Smooth
 }
 
 func AimbotAt(closestEnemy uintptr) {
@@ -63,7 +63,7 @@ func AimbotAt(closestEnemy uintptr) {
 	smoothedPitch := getSmoothedValue(pitch, viewAngles.X)
 	smoothedYaw := getSmoothedValue(yaw, viewAngles.Y)
 
-	if distance(viewAngles.X, viewAngles.Y, pitch, yaw) > configs.G.Aimbot.Fov {
+	if distance(viewAngles.X, viewAngles.Y, pitch, yaw) > configs.G.D.Aimbot.Fov {
 		// prevent to aim when target is out of fov circle
 		return
 	}
@@ -89,7 +89,7 @@ func AimbotAt(closestEnemy uintptr) {
 
 func Aimbot() {
 
-	if !configs.G.Aimbot.Enabled {
+	if !configs.G.D.Aimbot.Enabled {
 		return
 	}
 
@@ -98,7 +98,7 @@ func Aimbot() {
 		return
 	}
 
-	if !kb.GetAsyncKeyState(kb.GetKey(configs.G.Aimbot.Key)) {
+	if !kb.GetAsyncKeyState(kb.GetKey(configs.G.D.Aimbot.Key)) {
 		return
 	}
 

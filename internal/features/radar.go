@@ -1,7 +1,7 @@
 package features
 
 import (
-	"gosource/internal/configs"
+	"gosource/internal/global/configs"
 	"gosource/internal/memory"
 )
 

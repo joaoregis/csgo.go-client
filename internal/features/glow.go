@@ -1,8 +1,8 @@
 package features
 
 import (
-	"gosource/internal/configs"
 	"gosource/internal/csgo"
+	"gosource/internal/global/configs"
 	"gosource/internal/hackFunctions/color"
 
 	"github.com/google/gxui/math"
@@ -22,16 +22,16 @@ func Glow(entity uintptr) {
 
 	} else {
 
-		if configs.G.Glow.IsHealthBased {
+		if configs.G.D.Glow.IsHealthBased {
 
 			playerHealth := csgo.GetPlayerHealth(entity)
 			c := float32((math.Lerpf(0, 1, playerHealth/100)))
-			eGlow.SetColorRGBA(1-c, c, 0, configs.G.Glow.Alpha)
+			eGlow.SetColorRGBA(1-c, c, 0, configs.G.D.Glow.Alpha)
 
 		} else {
 
-			rgba := color.HexToRGBA(color.Hex(configs.G.Glow.BaseColor))
-			eGlow.SetColorRGBA(rgba.Red, rgba.Green, rgba.Blue, configs.G.Glow.Alpha)
+			rgba := color.HexToRGBA(color.Hex(configs.G.D.Glow.BaseColor))
+			eGlow.SetColorRGBA(rgba.Red, rgba.Green, rgba.Blue, configs.G.D.Glow.Alpha)
 
 		}
 
