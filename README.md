@@ -13,16 +13,15 @@ This client don't have any relations to Valve or similar, and use this on online
 |Option | Description  |
 |---|---|
 |Glow| Draw and outline around your enemies|
+|Auto Weapons| Auto shot for weapons that isn't full auto (pistols)|
 |Engine Chams| Colorized model for enemies to improve your visibility|
 |Radar Hack| Spot enemies on your in-game radar|
 |Bunnyhop| Auto-jump based bhop to allow you better movements|
 |Triggerbot| Auto shoot against your enemies when someone is in your crosshair|
 |Aimbot| Auto aim at your enemies to improve your accuracy|
 
-> *All features are customizable via `\configs\config.json` file*
+> ~~*All features are customizable via `\configs\config.json` file*~~
+<br />
+> Now, configs are available on your default documents folder
 
 ---
-
-## License
-
-> ***To be written***
