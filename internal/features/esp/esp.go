@@ -1,6 +1,7 @@
 package esp
 
 import (
+	"fmt"
 	"gosource/internal/csgo"
 	"gosource/internal/global/configs"
 	"gosource/internal/hackFunctions/color"
@@ -109,6 +110,9 @@ func renderName(top vector.Vector2, entity uintptr, entityIndex int, cfg configs
 
 	espColor := color.HexToRGBA(color.Hex(cfg.Color), &cfg.ColorAlpha)
 	entityName := csgo.GetPlayerName(entity)
+
+	fmt.Println(entityName)
+
 	DrawStringf(top, espColor, "%s", entityName)
 
 }

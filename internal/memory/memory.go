@@ -464,26 +464,17 @@ func ToStruct[T any](data []byte) (*T, error) {
 	return &dummy, nil
 }
 
-func Read[T any](p *Process, address uintptr, size uint) (*T, error) {
-
-	data, err := w32.ReadProcessMemory(p.Handle, uint32(address), size)
-	if err != nil {
-		log.Println("reading error. reason: %s", err.Error())
-		os.Exit(1)
-	}
-
-	if len(data) != int(size) {
-		return nil, errors.New("cannot read. data byte array is empty")
-	}
+func Read[T any](p *Process, address uintptr) (*T, error) {
 
 	var dummy T
-	b := bytes.NewBuffer(data)
-	err = binary.Read(b, binary.LittleEndian, &dummy)
-
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
+	var uSize uint = uint(unsafe.Sizeof(dummy))
+	_, _, _ = procReadProcessMemory.Call(
+		uintptr(p.Handle),               // process handle
+		address,                         // lpAddress of object start in memory
+		uintptr(unsafe.Pointer(&dummy)), // object-structured pointer
+		uintptr(uSize),                  // length of data
+		uintptr(unsafe.Pointer(&uSize)), // total of bytes read
+	)
 
 	return &dummy, nil
 }
@@ -491,33 +482,18 @@ func Read[T any](p *Process, address uintptr, size uint) (*T, error) {
 func Write[T any](p *Process, address uintptr, target *T) {
 
 	var err error
-	mbi, _ := VirtualQueryEx(p.Handle, address)
-	if mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS {
-		log.Println(errors.Wrap(err, "0x0000001"))
-	}
-
-	oldProt, err := VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE)
-	if err != nil {
-
-		log.Println(errors.Wrap(err, fmt.Sprintf("0x0000002, lpAddress: 0x%X", address)))
-		os.Exit(1)
-	}
 
 	buf := new(bytes.Buffer)
 	err = binary.Write(buf, binary.LittleEndian, target)
 	if err != nil {
-		_, _ = VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, oldProt)
 		log.Println(errors.Wrap(err, "0x0000003"))
 		os.Exit(1)
 	}
 
 	err = p.WriteBytes(address, buf.Bytes())
 	if err != nil {
-		_, _ = VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, oldProt)
 		log.Println(errors.Wrap(err, "0x0000004"))
 		os.Exit(1)
 	}
-
-	_, _ = VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, oldProt)
 
 }

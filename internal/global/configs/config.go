@@ -162,11 +162,10 @@ func defaultConfig() Config {
 	return Config{
 		Version: global.CONFIG_VERSION,
 		D: ConfigData{
-			ReloadKey:   "Insert",
-			StopKey:     "Delete",
-			Radar:       false,
-			EngineChams: false,
-			Bunnyhop:    false,
+			ReloadKey: "Insert",
+			StopKey:   "Delete",
+			Radar:     false,
+			Bunnyhop:  false,
 			Glow: ConfigDataGlow{
 				Enabled:       true,
 				BaseColor:     "#6821a6",

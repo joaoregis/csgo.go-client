@@ -39,6 +39,7 @@ func Encrypt(stringToEncrypt string, keyString string) (encryptedString string) 
 	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
 	return fmt.Sprintf("%x", ciphertext)
 }
+
 func Decrypt(encryptedString string, keyString string) (decryptedString string) {
 
 	key := []byte(keyString)

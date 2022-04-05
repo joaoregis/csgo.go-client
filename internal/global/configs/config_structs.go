@@ -54,7 +54,6 @@ type ConfigData struct {
 	ReloadKey   string                `json:"reloadKey"`
 	StopKey     string                `json:"stopKey"`
 	Radar       bool                  `json:"radar"`
-	EngineChams bool                  `json:"engineChams"`
 	Bunnyhop    bool                  `json:"bhop"`
 	Glow        ConfigDataGlow        `json:"glow"`
 	Triggerbot  ConfigDataTrigger     `json:"trigger"`

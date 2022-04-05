@@ -5,7 +5,6 @@ import (
 	"gosource/internal/global/configs"
 	"gosource/internal/hackFunctions/vector"
 	"gosource/internal/memory"
-	"unsafe"
 )
 
 var LocalEntity uintptr
@@ -214,10 +213,7 @@ func GetPlayerInfo(entity uintptr) *sdk.PlayerInfo_T {
 
 	entityIndex, _ := memory.GameProcess.ReadInt(entity + 0x64)
 	dwPlayerInfo, _ := memory.GameProcess.ReadIntPtr((UserInfoTableItems + 0x28) + (uintptr((entityIndex - 2) * 0x34)))
-
-	const uSize uint = uint(unsafe.Sizeof(sdk.PlayerInfo_T{}))
-	pInfo, _ := memory.Read[sdk.PlayerInfo_T](&memory.GameProcess, dwPlayerInfo, uSize)
-
+	pInfo, _ := memory.Read[sdk.PlayerInfo_T](&memory.GameProcess, dwPlayerInfo)
 	return pInfo
 }
 
@@ -230,8 +226,7 @@ func GetRadarPlayer(entityIndex uintptr) *sdk.RadarPlayer_T {
 
 	dwRadarBase, _ := memory.GameProcess.ReadIntPtr(memory.GameClient + configs.Offsets.Signatures.DwRadarBase)
 	dwRadarBase_CSGOHudRadar, _ := memory.GameProcess.ReadIntPtr(dwRadarBase + 0x78)
-	const uSize uint = uint(unsafe.Sizeof(sdk.RadarPlayer_T{}))
-	radarPlayer, _ := memory.Read[sdk.RadarPlayer_T](&memory.GameProcess, dwRadarBase_CSGOHudRadar+(0x174*(entityIndex+2))-0x18, uSize)
+	radarPlayer, _ := memory.Read[sdk.RadarPlayer_T](&memory.GameProcess, dwRadarBase_CSGOHudRadar+(0x174*(entityIndex+2))-0x18)
 	return radarPlayer
 
 }
@@ -240,8 +235,7 @@ func GetEntityGlow(entity uintptr) *sdk.EntityGlowStruct {
 
 	dwGlowObjectManager, _ := memory.GameProcess.ReadIntPtr(memory.GameClient + configs.Offsets.Signatures.DwGlowObjectManager)
 	iGlowIndex, _ := memory.GameProcess.ReadIntPtr(entity + configs.Offsets.Netvars.MIGlowIndex)
-	const uSize uint = uint(unsafe.Sizeof(sdk.EntityGlowStruct{}))
-	v, _ := memory.Read[sdk.EntityGlowStruct](&memory.GameProcess, dwGlowObjectManager+(iGlowIndex*0x38)+0x8, uSize)
+	v, _ := memory.Read[sdk.EntityGlowStruct](&memory.GameProcess, dwGlowObjectManager+(iGlowIndex*0x38)+0x8)
 	return v
 
 }

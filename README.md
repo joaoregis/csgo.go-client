@@ -25,3 +25,8 @@ This client don't have any relations to Valve or similar, and use this on online
 > Now, configs are available on your default documents folder
 
 ---
+
+## CGO Issues relatable commands
+
+> ```go env -w CGO_ENABLED=1```
+> ```go env -w CGO_CPPFLAGS="-g -O2 -m32"```

@@ -6,7 +6,6 @@ import (
 	"gosource/internal/csgo/offsets"
 	"gosource/internal/csgo/sdk"
 	"gosource/internal/features"
-	"gosource/internal/features/glow"
 	"gosource/internal/global"
 	"gosource/internal/global/configs"
 	"gosource/internal/global/utils"
@@ -67,7 +66,6 @@ func main() {
 
 	glfw.WindowHint(glfw.Floating, glfw.True)
 	glfw.WindowHint(glfw.Resizable, glfw.False)
-	glfw.WindowHint(glfw.Maximized, glfw.True)
 	glfw.WindowHint(glfw.TransparentFramebuffer, glfw.True)
 
 	global.WINDOW, err = glfw.CreateWindow(1, 1, global.HARDWARE_ID, nil, nil)
@@ -165,6 +163,7 @@ func main() {
 
 				AlreadyShowed = true
 				global.WINDOW.Show()
+
 			}
 
 		}
@@ -215,7 +214,6 @@ func main() {
 
 func endCheat() {
 	fmt.Println("clearing client residues ...")
-	glow.ClearEngineChams()
 }
 
 func updateOffsetsByPatterns() {

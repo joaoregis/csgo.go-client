@@ -4,6 +4,7 @@ import (
 	"syscall"
 
 	"github.com/Xustyx/w32"
+	"golang.org/x/sys/windows"
 )
 
 const (
@@ -13,9 +14,10 @@ const (
 )
 
 var (
-	kernel32         = syscall.NewLazyDLL("kernel32.dll")
-	virtualQueryEx   = kernel32.NewProc("VirtualQueryEx")
-	virtualProtectEx = kernel32.NewProc("VirtualProtectEx")
+	kernel32              = windows.MustLoadDLL("kernel32.dll")
+	virtualQueryEx        = kernel32.MustFindProc("VirtualQueryEx")
+	virtualProtectEx      = kernel32.MustFindProc("VirtualProtectEx")
+	procReadProcessMemory = kernel32.MustFindProc("ReadProcessMemory")
 )
 
 var (

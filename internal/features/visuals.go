@@ -32,8 +32,5 @@ func Visuals() {
 		if configs.G.D.Glow.Enabled {
 			glow.Glow(entity)
 		}
-
-		glow.EngineChams(entity)
-
 	}
 }
