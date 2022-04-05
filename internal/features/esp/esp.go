@@ -129,6 +129,7 @@ func renderName(bottom vector.Vector2, top vector.Vector2, entity uintptr, entit
 	entityName := csgo.GetPlayerName(entity)
 	pNamePos := vector.Vector2{X: top.X, Y: top.Y}
 
+	// TODO: calcular textWidth e melhorar escalonamento para centralizar com a posição do bone_head
 	pNamePos.X -= offsetName
 	pNamePos.Y += +0.065
 
