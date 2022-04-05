@@ -3,17 +3,25 @@ package main
 import (
 	"fmt"
 	"gosource/internal/csgo"
+	"gosource/internal/csgo/offsets"
+	"gosource/internal/csgo/sdk"
 	"gosource/internal/features"
+	"gosource/internal/features/glow"
 	"gosource/internal/global"
 	"gosource/internal/global/configs"
 	"gosource/internal/global/utils"
 	"gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/memory"
-	"gosource/internal/offsets"
-	"os"
-	"os/signal"
+	"log"
+	"runtime"
 	"strings"
+	"syscall"
 	"time"
+	"unsafe"
+
+	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/lxn/win"
 )
 
 var (
@@ -21,27 +29,71 @@ var (
 	BUILD_TIMESTAMP = "development"
 )
 
-var ShouldContinue = true
-var found = false
+func init() {
+	// This is needed to arrange that main() runs on main thread.
+	// See documentation for functions that are only allowed to be called from the main thread.
+	runtime.LockOSThread()
+
+}
+
+func WndProc(hWnd win.HWND, Msg uint32, wParam uintptr, lParam uintptr) uintptr {
+
+	if Msg == win.WM_NCHITTEST {
+		return win.HTNOWHERE
+	}
+
+	return win.DefWindowProc(hWnd, Msg, wParam, lParam)
+
+}
+
+var AlreadyShowed bool = false
 
 func main() {
 
+	for global.HWND == 0 {
+		global.HWND = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
+		fmt.Println("awaiting for csgo ...")
+		time.Sleep(1000 * time.Millisecond)
+	}
+
+	/**** START: OPEN-GL INITIALIZATION ****/
+	fmt.Println("initializing resources ...")
+
+	err := glfw.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer glfw.Terminate()
+
+	glfw.WindowHint(glfw.Floating, glfw.True)
+	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.Maximized, glfw.True)
+	glfw.WindowHint(glfw.TransparentFramebuffer, glfw.True)
+
+	global.WINDOW, err = glfw.CreateWindow(1, 1, global.HARDWARE_ID, nil, nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer global.WINDOW.Destroy()
+
+	global.WINDOW.SetAttrib(glfw.Decorated, glfw.False)
+
+	global.WINDOW.MakeContextCurrent()
+
+	glfw.SwapInterval(1)
+
+	if err := gl.Init(); err != nil {
+		log.Fatal(err)
+	}
+
+	global.InitFonts()
+
+	/**** END: OPEN-GL INITIALIZATION ****/
+
+	/* After initialization of opengl */
 	utils.SetConsoleTitle(PROJECT_NAME + " - build: " + BUILD_TIMESTAMP)
-
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt)
-
-	go func() {
-
-		sig := <-c
-		if sig == os.Interrupt {
-			fmt.Println("operation aborted by user. closing client.", sig)
-			endCheat()
-			ShouldContinue = false
-			os.Exit(1)
-		}
-
-	}()
 
 	if global.DEBUG_MODE {
 
@@ -60,7 +112,7 @@ func main() {
 	keyboard.InitKeys()
 
 	for !memory.Init() {
-		fmt.Println("awaiting for game process to proceed ...")
+		fmt.Println("trying to initialize the memory module ...")
 		time.Sleep(1000 * time.Millisecond)
 	}
 
@@ -70,38 +122,55 @@ func main() {
 	fmt.Println("scanning for new game patterns")
 	updateOffsetsByPatterns()
 
-	// Mainloop
-	tries := 0
-	fmt.Println("everything is fine. good hacking.")
-	for ShouldContinue {
+	// Overlay hit test handling
+	global.OVERLAY_HWND = win.HWND(uintptr(unsafe.Pointer(global.WINDOW.GetWin32Window())))
+	wproc := syscall.NewCallback(WndProc)
+	win.SetWindowLongPtr(global.OVERLAY_HWND, win.GWLP_WNDPROC, wproc)
+	extendedStyle := win.GetWindowLong(global.OVERLAY_HWND, win.GWL_EXSTYLE)
+	win.SetWindowLong(global.OVERLAY_HWND, win.GWL_EXSTYLE, extendedStyle|win.WS_EX_TRANSPARENT|win.WS_EX_LAYERED|win.WS_EX_NOACTIVATE)
 
-		// guarantee that offsets will be loaded correctly
-		if !found {
-
-			for configs.Offsets.Signatures.DwEntityList == 0x0 {
-
-				if tries > 10 {
-					panic("could not find updated offsets ...")
-				}
-
-				fmt.Println("trying to recover updated offsets ...")
-				updateOffsetsByPatterns()
-				time.Sleep(200 * time.Millisecond)
-				tries++
-
-			}
-
-			found = true
-
+	// View Matrix Update Loop
+	go func() {
+		for !global.WINDOW.ShouldClose() && global.HWND != 0 {
+			sdk.UpdateViewMatrix()
 		}
+	}()
+
+	// Mainloop
+	fmt.Println("everything is fine. good hacking.")
+	for !global.WINDOW.ShouldClose() && global.HWND != 0 {
+
+		glfw.PollEvents()
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+
+		global.HWND_RECT = utils.GetClientRect(global.HWND)
+		global.WINDOW.SetSize(int(global.HWND_RECT.Right), int(global.HWND_RECT.Bottom))
+
+		hCsPositionOnScreen := utils.GetLocalCoordinates(global.HWND)
+		global.WINDOW.SetPos(int(hCsPositionOnScreen.Left), int(hCsPositionOnScreen.Top))
 
 		// only will perform client actions when counter-strike is focused
-		if hwnd := memory.GetWindow("GetForegroundWindow"); hwnd != 0 {
+		if hwnd := win.GetForegroundWindow(); hwnd != 0 {
+
 			hwndText := memory.GetWindowText(memory.HWND(hwnd))
-			if !strings.Contains(hwndText, "Counter-Strike") {
+			if !strings.Contains(hwndText, "Counter-Strike: Global Offensive") {
+				if AlreadyShowed {
+					global.WINDOW.Hide()
+					AlreadyShowed = false
+				}
 				continue
 			}
+
+			if !AlreadyShowed {
+
+				AlreadyShowed = true
+				global.WINDOW.Show()
+			}
+
 		}
+
+		win.BringWindowToTop(global.OVERLAY_HWND)
+		win.SetFocus(global.HWND)
 
 		//
 		if csgo.UpdatePlayerVars() != nil {
@@ -113,14 +182,13 @@ func main() {
 		}
 
 		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.D.StopKey)) {
-			ShouldContinue = false
+			global.WINDOW.SetShouldClose(true)
 		}
-
-		features.Visuals()
 
 		// skip these features when cursor is enabled
 		if !csgo.IsCursorEnabled() {
 
+			features.Visuals()
 			features.AutoWeapons()
 			features.Triggerbot()
 			features.BunnyHop()
@@ -128,19 +196,26 @@ func main() {
 
 		}
 
-		if !ShouldContinue {
+		if global.WINDOW.ShouldClose() {
 			break
 		}
 
-		time.Sleep(1 * time.Millisecond)
+		global.HWND = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
+
+		// Rendering
+		display_w, display_h := glfw.GetCurrentContext().GetFramebufferSize()
+		gl.Viewport(0, 0, int32(display_w), int32(display_h))
+		global.WINDOW.SwapBuffers()
+
 	}
 
+	endCheat()
 	fmt.Println("good bye. cya!")
 }
 
 func endCheat() {
 	fmt.Println("clearing client residues ...")
-	features.ClearEngineChams()
+	glow.ClearEngineChams()
 }
 
 func updateOffsetsByPatterns() {

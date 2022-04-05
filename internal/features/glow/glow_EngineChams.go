@@ -1,7 +1,8 @@
-package features
+package glow
 
 import (
 	"gosource/internal/csgo"
+	"gosource/internal/csgo/sdk"
 	"gosource/internal/global/configs"
 	"gosource/internal/memory"
 )
@@ -13,26 +14,30 @@ func ClearEngineChams() {
 
 		entity, _ := csgo.GetPlayerByIndex(i)
 
-		memory.GameProcess.WriteBytes(entity+configs.Offsets.Netvars.MClrRender, csgo.CLRColorRender{
+		memory.Write(&memory.GameProcess, entity+configs.Offsets.Netvars.MClrRender, &sdk.CLRColorRender{
 			R: 255,
 			G: 255,
 			B: 255,
 			A: 255,
-		}.Bytes())
+		})
 
 	}
 }
 
 func EngineChams(entity uintptr) {
 
+	if !ValidatePlayerGlow(entity) {
+		return
+	}
+
 	if !configs.G.D.EngineChams {
 
-		memory.GameProcess.WriteBytes(entity+configs.Offsets.Netvars.MClrRender, csgo.CLRColorRender{
+		memory.Write(&memory.GameProcess, entity+configs.Offsets.Netvars.MClrRender, &sdk.CLRColorRender{
 			R: 255,
 			G: 255,
 			B: 255,
 			A: 255,
-		}.Bytes())
+		})
 
 		return
 
@@ -44,13 +49,13 @@ func EngineChams(entity uintptr) {
 	}
 
 	eGlow := csgo.GetEntityGlow(entity)
-	clrColorStruct := csgo.CLRColorRender{
+	clrColorStruct := sdk.CLRColorRender{
 		R: byte(eGlow.Red * 255),
 		G: byte(eGlow.Green * 255),
 		B: byte(eGlow.Blue * 255),
 		A: 255,
 	}
 
-	memory.GameProcess.WriteBytes(entity+configs.Offsets.Netvars.MClrRender, clrColorStruct.Bytes())
+	memory.Write(&memory.GameProcess, entity+configs.Offsets.Netvars.MClrRender, &clrColorStruct)
 
 }

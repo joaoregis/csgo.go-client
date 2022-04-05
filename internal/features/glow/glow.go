@@ -1,4 +1,4 @@
-package features
+package glow
 
 import (
 	"gosource/internal/csgo"
@@ -10,6 +10,10 @@ import (
 
 func Glow(entity uintptr) {
 
+	if !ValidatePlayerGlow(entity) {
+		return
+	}
+
 	isEnemy, _ := csgo.PlayerIsEnemy(entity)
 	if !isEnemy {
 		return
@@ -18,7 +22,7 @@ func Glow(entity uintptr) {
 	eGlow := csgo.GetEntityGlow(entity)
 	if csgo.IsDefusing(entity) {
 
-		eGlow.SetColorRGBA(1, 1, 1, 1) // Set glow to white when enemy is defusing!
+		SetColorRGBA(eGlow, 1, 1, 1, 1) // Set glow to white when enemy is defusing!
 
 	} else {
 
@@ -26,16 +30,16 @@ func Glow(entity uintptr) {
 
 			playerHealth := csgo.GetPlayerHealth(entity)
 			c := float32((math.Lerpf(0, 1, playerHealth/100)))
-			eGlow.SetColorRGBA(1-c, c, 0, configs.G.D.Glow.Alpha)
+			SetColorRGBA(eGlow, 1-c, c, 0, configs.G.D.Glow.Alpha)
 
 		} else {
 
-			rgba := color.HexToRGBA(color.Hex(configs.G.D.Glow.BaseColor))
-			eGlow.SetColorRGBA(rgba.Red, rgba.Green, rgba.Blue, configs.G.D.Glow.Alpha)
+			rgba := color.HexToRGBA(color.Hex(configs.G.D.Glow.BaseColor), &configs.G.D.Glow.Alpha)
+			SetColorRGBA(eGlow, rgba.Red, rgba.Green, rgba.Blue, configs.G.D.Glow.Alpha)
 
 		}
 
 	}
 
-	eGlow.Save(entity)
+	csgo.SetEntityGlow(eGlow, entity, 1)
 }

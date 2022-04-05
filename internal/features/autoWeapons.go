@@ -14,6 +14,12 @@ var t time.Time
 func AutoWeapons() {
 
 	if hWIdx, _ := csgo.GetActiveWeapon(); configs.G.D.AutoWeapons.Enabled && (csgo.IsPistol(hWIdx) || csgo.IsDeagle(hWIdx)) {
+
+		//
+		if csgo.IsCursorEnabled() {
+			return
+		}
+
 		elapsed := time.Since(t).Milliseconds()
 		// 15ms is the minimum value and 25ms is the "maximum" minimum value to make it random
 		if elapsed > int64(rand.Intn(25-15)+15)+int64(configs.G.D.AutoWeapons.Delay) {

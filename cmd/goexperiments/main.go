@@ -1,17 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"gosource/internal/global"
-	"os/user"
-	"path"
-	"path/filepath"
+	"runtime"
+
+	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
+func init() {
+	// This is needed to arrange that main() runs on main thread.
+	// See documentation for functions that are only allowed to be called from the main thread.
+	runtime.LockOSThread()
+}
+
 func main() {
+	err := glfw.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer glfw.Terminate()
 
-	u, _ := user.Current()
-	documentsPath, _ := filepath.Abs(path.Join(u.HomeDir, "Documents", global.CONFIG_NAME))
-	fmt.Println(documentsPath)
+	window, err := glfw.CreateWindow(640, 480, "Testing", nil, nil)
+	if err != nil {
+		panic(err)
+	}
 
+	window.MakeContextCurrent()
+
+	for !window.ShouldClose() {
+		// Do OpenGL stuff.
+		window.SwapBuffers()
+		glfw.PollEvents()
+	}
 }

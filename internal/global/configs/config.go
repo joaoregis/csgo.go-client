@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gosource/internal/csgo/offsets"
 	"gosource/internal/global"
-	"gosource/internal/offsets"
 	"io/ioutil"
 	"log"
 	"os"
@@ -71,11 +71,13 @@ func write() error {
 
 	}
 
-	file, err = os.Open(path)
+	file, err = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		fmt.Println("write err 1")
 		return err
 	}
+
+	defer file.Close()
 
 	if global.DEBUG_MODE {
 		j, _ = json.MarshalIndent(G, "", "	")
@@ -87,7 +89,12 @@ func write() error {
 		j = []byte(global.CONFIG_NAME_WITHOUT_EXT + ":" + global.Encrypt(string(j), global.APP_HASH_ENC_KEY))
 	}
 
-	file.Write(j)
+	content := string(j)
+	if global.DEBUG_MODE {
+		fmt.Printf("%s\n", content)
+	}
+
+	file.WriteString(content)
 
 	return nil
 
@@ -120,16 +127,22 @@ func read() error {
 		return err
 	}
 
+	fmt.Printf("detected config version: %s | current config version: %s \n", dummy["version"], global.CONFIG_VERSION)
 	if dummy["version"] != global.CONFIG_VERSION {
 		// version has changed, need to be updated
 		err = json.Unmarshal(j, &G)
 		if err != nil {
-			// cannot recover data :( [possibly too old config]
+			fmt.Printf("cannot recover data. config will be regenerated.\n")
 			G = defaultConfig()
 			write()
 		} else {
 			// read successfully
+			fmt.Printf("config updated successfully.\n")
 			G.Version = global.CONFIG_VERSION
+
+			/* New features need to be defined here. Theres nothing to do about that */
+			G.D.ESP = newConfigEntry_defaultValues_ESP()
+
 			write()
 		}
 	}
@@ -155,9 +168,9 @@ func defaultConfig() Config {
 			EngineChams: false,
 			Bunnyhop:    false,
 			Glow: ConfigDataGlow{
-				Enabled:       false,
-				BaseColor:     "#F000FF",
-				Alpha:         0.7,
+				Enabled:       true,
+				BaseColor:     "#6821a6",
+				Alpha:         0.6,
 				IsHealthBased: false,
 			},
 			Triggerbot: ConfigDataTrigger{
@@ -175,7 +188,36 @@ func defaultConfig() Config {
 				Fov:     5.0,
 				Smooth:  10.0,
 			},
+			ESP: newConfigEntry_defaultValues_ESP(),
 		},
+	}
+}
+
+func newConfigEntry_defaultValues_ESP() ConfigDataESP {
+	return ConfigDataESP{
+		Enabled:          true,
+		AllyBoundingBox:  newConfigEntry_defaultValues_ESP_BoundingBox(false),
+		EnemyBoundingBox: newConfigEntry_defaultValues_ESP_BoundingBox(true),
+		DrawSnapLines:    false,
+	}
+}
+
+func newConfigEntry_defaultValues_ESP_BoundingBox(e bool) ConfigDataESPBoundingBox {
+	return ConfigDataESPBoundingBox{
+		Enabled:               e,
+		DrawBox:               true,
+		Layout:                0,
+		Outline:               false,
+		OutlineColor:          "#000000",
+		Color:                 "#6821a6",
+		ColorAlpha:            .5,
+		IsColorHealthBasedBox: false,
+		FullfillBox:           true,
+		FullfillBoxColor:      "#333333",
+		FullfillBoxColorAlpha: 0.4,
+		DrawName:              true,
+		DrawHealth:            true,
+		Thickness:             4,
 	}
 }
 
