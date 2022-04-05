@@ -1,7 +1,6 @@
 package esp
 
 import (
-	"fmt"
 	"gosource/internal/csgo"
 	"gosource/internal/global/configs"
 	"gosource/internal/hackFunctions/color"
@@ -85,35 +84,50 @@ func renderHealth(bottom vector.Vector2, top vector.Vector2, entity uintptr, alp
 
 	playerHealth := csgo.GetPlayerHealth(entity)
 	healthPerc := float64(playerHealth / 100.0)
-	var bottomHealth, topHealth vector.Vector2
+
+	var topLeft, bottomRight, topLeftHealth vector.Vector2
 
 	healthHeight := height * healthPerc
 
-	topHealth.Y = top.Y - height + healthHeight
-	topHealth.X = (top.X - height/4) - 0.01
+	topLeft.X = (top.X - height/4) - 0.015
+	topLeftHealth.X = topLeft.X
 
-	bottomHealth.Y = bottom.Y
-	bottomHealth.X = topHealth.X
+	topLeft.Y = top.Y - height
+	topLeftHealth.Y = topLeft.Y + healthHeight
+
+	bottomRight.X = topLeft.X + 0.015
+	bottomRight.Y = bottom.Y
 
 	c := float32((math2.Lerpf(0, 1, playerHealth/100)))
 	rgba := color.NewRGBA(1-c, c, 0, alpha)
 
-	DrawLine(bottomHealth, topHealth, 4, rgba)
+	// DrawFilledRect(topLeft, bottomRight, color.NewRGBA(0, 0, 0, 1))
+	DrawFilledRect(topLeftHealth, bottomRight, rgba)
+	// DrawLine(bottomHealth, topHealth, 4, rgba)
 
 }
 
-func renderName(top vector.Vector2, entity uintptr, entityIndex int, cfg configs.ConfigDataESPBoundingBox) {
+func renderName(bottom vector.Vector2, top vector.Vector2, entity uintptr, entityIndex int, cfg configs.ConfigDataESPBoundingBox) {
 
 	if csgo.PlayerIsLocalEntity(entity) {
 		return
 	}
 
+	H := math.Abs(top.Y - bottom.Y)
+	var topLeft, topRight, bottomLeft, bottomRight vector.Vector2
+
+	topLeft.X = top.X - H/4
+	topRight.X = top.X + H/4
+	topLeft.Y = top.Y
+	topRight.Y = top.Y
+	bottomLeft.X = top.X - H/4
+	bottomRight.X = top.X + H/4
+	bottomLeft.Y = bottom.Y
+	bottomRight.Y = bottom.Y
+
 	espColor := color.HexToRGBA(color.Hex(cfg.Color), &cfg.ColorAlpha)
 	entityName := csgo.GetPlayerName(entity)
-
-	fmt.Println(entityName)
-
-	DrawStringf(top, espColor, "%s", entityName)
+	DrawStringf(topLeft, espColor, "%s", entityName)
 
 }
 
@@ -161,7 +175,7 @@ func Esp(entity uintptr, entityIndex int) {
 
 		/***** ENEMY NAME *****/
 		if configs.G.D.ESP.EnemyBoundingBox.DrawName {
-			renderName(entityHead2D, entity, entityIndex, configs.G.D.ESP.EnemyBoundingBox)
+			renderName(*entityPosition2D, entityHead2D, entity, entityIndex, configs.G.D.ESP.EnemyBoundingBox)
 		}
 
 	} else if configs.G.D.ESP.AllyBoundingBox.Enabled {
@@ -178,7 +192,7 @@ func Esp(entity uintptr, entityIndex int) {
 
 		/***** ALLY NAME *****/
 		if configs.G.D.ESP.AllyBoundingBox.DrawName {
-			renderName(entityHead2D, entity, entityIndex, configs.G.D.ESP.EnemyBoundingBox)
+			renderName(*entityPosition2D, entityHead2D, entity, entityIndex, configs.G.D.ESP.EnemyBoundingBox)
 		}
 
 	}

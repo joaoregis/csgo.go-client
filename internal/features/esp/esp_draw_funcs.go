@@ -1,6 +1,7 @@
 package esp
 
 import (
+	"gosource/internal/global"
 	"gosource/internal/hackFunctions/color"
 	"gosource/internal/hackFunctions/vector"
 
@@ -46,16 +47,8 @@ func DrawOutlinedRect(pos1 vector.Vector2, pos2 vector.Vector2, c *color.RGBA) {
 
 }
 
-func DrawStringf(pos vector.Vector2, color *color.RGBA, format string, argv ...interface{}) {
+func DrawStringf(pos vector.Vector2, c *color.RGBA, format string, argv ...interface{}) {
 
-	// gl.Color4f(color.Red, color.Blue, color.Green, color.Alpha)
-	// gl.RasterPos2f(float32(pos.X), float32(pos.Y))
-
-	// text := fmt.Sprintf(format, argv...)
-
-	// gl.PushAttrib(gl.LIST_BIT)
-	// gl.ListBase(32)
-	// gl.CallLists(int32(len(text)), gl.UNSIGNED_BYTE, unsafe.Pointer(&text))
-	// gl.PopAttrib()
-
+	gl.Color4f(c.Red, c.Blue, c.Green, c.Alpha)
+	global.Font12.Printf(float32(pos.X), float32(pos.Y), format, argv...)
 }

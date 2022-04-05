@@ -1,6 +1,7 @@
 package global
 
 import (
+	"log"
 	"os"
 
 	"github.com/flopp/go-findfont"
@@ -12,8 +13,13 @@ var Font12 *gltext.Font
 
 func InitFonts() {
 
+	var err error
 	DefaultFontPath, _ = findfont.Find("arial.ttf")
-	Font12, _ = loadFont(DefaultFontPath, 12)
+	Font12, err = loadFont(DefaultFontPath, 12)
+
+	if err != nil {
+		log.Println(err.Error())
+	}
 
 }
 
