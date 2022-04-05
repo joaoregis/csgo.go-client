@@ -158,7 +158,7 @@ func GetClosestPlayer() (uintptr, error) {
 
 		currentEntityVecOrigin, _ := memory.GameProcess.ReadVec3(curEnt + configs.Offsets.Netvars.MVecOrigin)
 
-		curDistance := getDistance(LocalEntity, *currentEntityVecOrigin)
+		curDistance := GetDistance(LocalEntity, *currentEntityVecOrigin)
 
 		if curDistance < closestDistance {
 			closestDistance = curDistance
@@ -168,6 +168,13 @@ func GetClosestPlayer() (uintptr, error) {
 	}
 
 	return closestEnt, nil
+}
+
+func GetEntityVecOrigin(entity uintptr) *vector.Vector3 {
+
+	currentEntityVecOrigin, _ := memory.GameProcess.ReadVec3(entity + configs.Offsets.Netvars.MVecOrigin)
+	return currentEntityVecOrigin
+
 }
 
 func GetBonePos(entity uintptr, bone int) (vector.Vector3, error) {
@@ -212,7 +219,7 @@ func LoadUserInfoTable() {
 func GetPlayerInfo(entity uintptr) *sdk.PlayerInfo_T {
 
 	entityIndex, _ := memory.GameProcess.ReadInt(entity + 0x64)
-	dwPlayerInfo, _ := memory.GameProcess.ReadIntPtr((UserInfoTableItems + 0x28) + (uintptr((entityIndex - 2) * 0x34)))
+	dwPlayerInfo, _ := memory.GameProcess.ReadIntPtr((UserInfoTableItems + 0x28) + (uintptr((entityIndex - 1) * 0x34)))
 	pInfo, _ := memory.Read[sdk.PlayerInfo_T](&memory.GameProcess, dwPlayerInfo)
 	return pInfo
 }

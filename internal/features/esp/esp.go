@@ -89,21 +89,20 @@ func renderHealth(bottom vector.Vector2, top vector.Vector2, entity uintptr, alp
 
 	healthHeight := height * healthPerc
 
-	topLeft.X = (top.X - height/4) - 0.015
+	topLeft.X = (top.X - height/4) - 0.02
 	topLeftHealth.X = topLeft.X
 
 	topLeft.Y = top.Y - height
 	topLeftHealth.Y = topLeft.Y + healthHeight
 
-	bottomRight.X = topLeft.X + 0.015
+	bottomRight.X = topLeft.X + 0.01
 	bottomRight.Y = bottom.Y
 
 	c := float32((math2.Lerpf(0, 1, playerHealth/100)))
 	rgba := color.NewRGBA(1-c, c, 0, alpha)
 
-	// DrawFilledRect(topLeft, bottomRight, color.NewRGBA(0, 0, 0, 1))
+	// DrawFilledRect(topLeft, bottomRight, color.NewRGBA(0, 0, 0, .5))
 	DrawFilledRect(topLeftHealth, bottomRight, rgba)
-	// DrawLine(bottomHealth, topHealth, 4, rgba)
 
 }
 
@@ -113,21 +112,27 @@ func renderName(bottom vector.Vector2, top vector.Vector2, entity uintptr, entit
 		return
 	}
 
-	H := math.Abs(top.Y - bottom.Y)
-	var topLeft, topRight, bottomLeft, bottomRight vector.Vector2
+	dwLocalPlayer, _ := csgo.GetLocalPlayer()
+	distanceToTargetEntity := csgo.GetDistance(dwLocalPlayer, *csgo.GetEntityVecOrigin(entity))
 
-	topLeft.X = top.X - H/4
-	topRight.X = top.X + H/4
-	topLeft.Y = top.Y
-	topRight.Y = top.Y
-	bottomLeft.X = top.X - H/4
-	bottomRight.X = top.X + H/4
-	bottomLeft.Y = bottom.Y
-	bottomRight.Y = bottom.Y
+	var offsetName float64
 
-	espColor := color.HexToRGBA(color.Hex(cfg.Color), &cfg.ColorAlpha)
+	if distanceToTargetEntity < 400 {
+		offsetName = distanceToTargetEntity / 100000
+	} else if distanceToTargetEntity < 600 {
+		offsetName = distanceToTargetEntity / 10000
+	} else {
+		offsetName = distanceToTargetEntity / 100000
+	}
+
+	espColor := color.HexToRGBA(color.Hex(cfg.Color), nil)
 	entityName := csgo.GetPlayerName(entity)
-	DrawStringf(topLeft, espColor, "%s", entityName)
+	pNamePos := vector.Vector2{X: top.X, Y: top.Y}
+
+	pNamePos.X -= offsetName
+	pNamePos.Y += +0.065
+
+	DrawStringf(pNamePos, espColor, entityName)
 
 }
 
@@ -143,6 +148,7 @@ func Esp(entity uintptr, entityIndex int) {
 	if !csgo.WorldToScreen(&entityHead3D, &entityHead2D) {
 		return
 	}
+
 	var entityPosition2D *vector.Vector2
 	if entityPosition2D = csgo.GetEntity2DPos(entity); entityPosition2D == nil {
 		return

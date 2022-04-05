@@ -127,6 +127,9 @@ func main() {
 	extendedStyle := win.GetWindowLong(global.OVERLAY_HWND, win.GWL_EXSTYLE)
 	win.SetWindowLong(global.OVERLAY_HWND, win.GWL_EXSTYLE, extendedStyle|win.WS_EX_TRANSPARENT|win.WS_EX_LAYERED|win.WS_EX_NOACTIVATE)
 
+	// create bitmaps for the device context font's first 256 glyphs
+	win.WglUseFontBitmaps(win.HDC(global.OVERLAY_HWND), 0, 256, 1000)
+
 	// View Matrix Update Loop
 	go func() {
 		for !global.WINDOW.ShouldClose() && global.HWND != 0 {
@@ -138,6 +141,9 @@ func main() {
 	fmt.Println("everything is fine. good hacking.")
 	for !global.WINDOW.ShouldClose() && global.HWND != 0 {
 
+		display_w, display_h := glfw.GetCurrentContext().GetFramebufferSize()
+		gl.Viewport(0, 0, int32(display_w), int32(display_h))
+		global.WINDOW.SwapBuffers()
 		glfw.PollEvents()
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
@@ -202,9 +208,7 @@ func main() {
 		global.HWND = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
 
 		// Rendering
-		display_w, display_h := glfw.GetCurrentContext().GetFramebufferSize()
-		gl.Viewport(0, 0, int32(display_w), int32(display_h))
-		global.WINDOW.SwapBuffers()
+		gl.Flush()
 
 	}
 

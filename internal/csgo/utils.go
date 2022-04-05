@@ -9,7 +9,7 @@ import (
 	"math"
 )
 
-func getDistance(entity uintptr, other vector.Vector3) float64 {
+func GetDistance(entity uintptr, other vector.Vector3) float64 {
 	entPosition, _ := memory.GameProcess.ReadVec3(entity + configs.Offsets.Netvars.MVecOrigin)
 	delta := other.CalcVector3WithOtherVector3(*entPosition, "-")
 
