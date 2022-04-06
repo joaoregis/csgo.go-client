@@ -6,16 +6,14 @@ import (
 )
 
 func Fatal(fmt string, args ...interface{}) {
-	if global.LOG_DEBUG {
-		log.SetPrefix("[Debug]")
-		m := global.SPRINT_F(fmt, args...)
-		log.Fatal(m)
-	}
+	log.SetPrefix("[Fatal] ")
+	m := global.SPRINT_F(fmt, args...)
+	log.Fatal(m)
 }
 
 func Debug(fmt string, args ...interface{}) {
 	if global.LOG_DEBUG {
-		log.SetPrefix("[Debug]")
+		log.SetPrefix("[Debug] ")
 		m := global.SPRINT_F(fmt, args...)
 		log.Println(m)
 	}
@@ -23,7 +21,7 @@ func Debug(fmt string, args ...interface{}) {
 
 func Info(fmt string, args ...interface{}) {
 	if global.VERBOSE {
-		log.SetPrefix("[Info]")
+		log.SetPrefix("[Info] ")
 		m := global.SPRINT_F(fmt, args...)
 		log.Println(m)
 	}
@@ -31,7 +29,7 @@ func Info(fmt string, args ...interface{}) {
 
 func Error(fmt string, args ...interface{}) {
 	if global.LOG_ERRORS {
-		log.SetPrefix("[Error]")
+		log.SetPrefix("[Error] ")
 		m := global.SPRINT_F(fmt, args...)
 		log.Println(m)
 	}
@@ -39,7 +37,7 @@ func Error(fmt string, args ...interface{}) {
 
 func Warn(fmt string, args ...interface{}) {
 	if global.LOG_WARNINGS {
-		log.SetPrefix("[Warn]")
+		log.SetPrefix("[Warn] ")
 		m := global.SPRINT_F(fmt, args...)
 		log.Println(m)
 	}
