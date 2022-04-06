@@ -58,13 +58,13 @@ func write() error {
 
 		G = defaultConfig()
 
-		if global.DEBUG_MODE {
+		if global.DO_NOT_ENCRYPT_CONFIG {
 			j, _ = json.MarshalIndent(G, "", "	")
 		} else {
 			j, _ = json.Marshal(G)
 		}
 
-		if !global.DEBUG_MODE {
+		if !global.DO_NOT_ENCRYPT_CONFIG {
 			j = []byte(global.CONFIG_NAME_WITHOUT_EXT + ":" + global.Encrypt(string(j), global.APP_HASH_ENC_KEY))
 		}
 
@@ -86,13 +86,13 @@ func write() error {
 
 	defer file.Close()
 
-	if global.DEBUG_MODE {
+	if global.DO_NOT_ENCRYPT_CONFIG {
 		j, _ = json.MarshalIndent(G, "", "	")
 	} else {
 		j, _ = json.Marshal(G)
 	}
 
-	if !global.DEBUG_MODE {
+	if !global.DO_NOT_ENCRYPT_CONFIG {
 		j = []byte(global.CONFIG_NAME_WITHOUT_EXT + ":" + global.Encrypt(string(j), global.APP_HASH_ENC_KEY))
 	}
 
@@ -113,7 +113,7 @@ func read() error {
 	j, _ := ioutil.ReadAll(file)
 	file.Close()
 
-	if !global.DEBUG_MODE {
+	if !global.DO_NOT_ENCRYPT_CONFIG {
 
 		enc_check := strings.Split(string(j), ":")
 		if len(enc_check) != 2 || enc_check[0] != global.CONFIG_NAME_WITHOUT_EXT {
