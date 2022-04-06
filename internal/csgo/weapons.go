@@ -2,6 +2,7 @@ package csgo
 
 import (
 	"gosource/internal/global/configs"
+	"gosource/internal/global/utils"
 	"gosource/internal/memory"
 )
 
@@ -32,7 +33,7 @@ func IsGranade(wIdx int) bool {
 		IncGrenade,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -74,7 +75,7 @@ func IsAimbotable(wIdx int) bool {
 		G3SG1,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -90,7 +91,7 @@ func IsPistol(wIdx int) bool {
 		Tec9,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -101,7 +102,7 @@ func IsBoltSniper(wIdx int) bool {
 		Ssg08,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -117,7 +118,7 @@ func IsSubmachineGun(wIdx int) bool {
 		Mp9,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -128,7 +129,7 @@ func IsAutoSniper(wIdx int) bool {
 		G3SG1,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -141,7 +142,7 @@ func IsSniper(wIdx int) bool {
 		G3SG1,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -152,7 +153,7 @@ func IsHeavyPistol(wIdx int) bool {
 		Revolver,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }
 
@@ -185,7 +186,7 @@ func IsKnife(wIdx int) bool {
 		GoldenKnife,
 	}
 
-	return contains(items, wIdx) || isInKnifeModelRange
+	return utils.Contains(items, wIdx) || isInKnifeModelRange
 
 }
 
@@ -201,6 +202,6 @@ func IsRifle(wIdx int) bool {
 		Sg553,
 	}
 
-	return contains(items, wIdx)
+	return utils.Contains(items, wIdx)
 
 }

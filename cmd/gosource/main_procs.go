@@ -3,13 +3,18 @@ package main
 /* Main package private members */
 
 import (
+	"encoding/json"
 	"gosource/internal/csgo"
 	"gosource/internal/csgo/sdk"
 	"gosource/internal/features"
 	"gosource/internal/global"
 	"gosource/internal/global/logs"
+	"gosource/internal/global/utils"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/lxn/win"
+	"github.com/pkg/errors"
 )
 
 func clientVMatrixLoop() {
@@ -62,5 +67,34 @@ func wndProc(hWnd win.HWND, Msg uint32, wParam uintptr, lParam uintptr) uintptr 
 	}
 
 	return win.DefWindowProc(hWnd, Msg, wParam, lParam)
+
+}
+
+func checkHwidAuth() bool {
+
+	var uri = "https://raw.githubusercontent.com/joaoregis/csgo.go-client-control/main/user-list.dat"
+
+	logs.Info("checking hwid ...")
+	resp, err := http.Get(uri)
+	if err != nil {
+		logs.Fatal(errors.Wrap(err, "cannot check hwid. aborting ...").Error())
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logs.Fatal(errors.Wrap(err, "cannot read hwid list. aborting ...").Error())
+	}
+
+	var o []string
+	err = json.Unmarshal(b, &o)
+	if err != nil {
+		logs.Fatal(errors.Wrap(err, "could not decode hwid. aborting ...").Error())
+	}
+
+	if utils.Contains(o, utils.GetProtectHwid()) {
+		return true
+	}
+
+	return false
 
 }

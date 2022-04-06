@@ -2,6 +2,8 @@ package main
 
 import (
 	"gosource/internal/global"
+	"gosource/internal/global/logs"
+	"gosource/internal/global/utils"
 	"runtime"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -33,6 +35,13 @@ func main() {
 
 	initClientHeader()
 	postInitOpenGL()
+
+	if b := checkHwidAuth(); !b {
+		logs.Info("your hwid is not registered yet. please, submit it to a admin:")
+		logs.Info(utils.GetProtectHwid())
+		return
+	}
+
 	go clientVMatrixLoop()
 	clientMainLoop()
 	gracefulExit()

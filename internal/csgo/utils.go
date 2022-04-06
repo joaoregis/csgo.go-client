@@ -16,15 +16,6 @@ func GetDistance(entity uintptr, other vector.Vector3) float64 {
 	return math.Sqrt(delta.X*delta.X + delta.Y*delta.Y + delta.Z*delta.Z)
 }
 
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
 func ConvertToRange(Point *vector.Vector2, w, h float64) {
 
 	Point.X /= w
