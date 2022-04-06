@@ -22,6 +22,10 @@ This client don't have any relations to Valve or similar, and use this on online
 
 > Now, configs are available on your default documents folder
 
+## Currently known issues
+
+- Name ESP is drawn out of center in some circunstances
+
 ## CGO Issues relatable commands
 
 ```shell
