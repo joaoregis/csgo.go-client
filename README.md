@@ -24,7 +24,7 @@ This client don't have any relations to Valve or similar, and use this on online
 
 ## Currently known issues
 
-- Name ESP is drawn out of center in some circunstances
+- Name ESP is drawn out of center in some circunstances (visual impact only/ low priority)
 
 ## CGO Issues relatable commands
 
