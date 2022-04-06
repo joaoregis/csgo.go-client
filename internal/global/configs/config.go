@@ -125,11 +125,11 @@ func read() error {
 
 	var dummy map[string]interface{}
 	if err = json.Unmarshal(j, &dummy); err != nil {
-		logs.Warn(errors.Wrap(err, "first read => cannot recover data. config will be regenerated.").Error())
+		logs.Warn(errors.Wrap(err, "first read => cannot recover data. config will be regenerated."))
 		goto REGENERATE_CONFIG_VALUES
 	}
 
-	logs.Info("detected config version: %s | current config version: %s \n", dummy["version"], global.CONFIG_VERSION)
+	logs.Infof("detected config version: %s | current config version: %s", dummy["version"], global.CONFIG_VERSION)
 	if dummy["version"] == global.CONFIG_VERSION {
 		return nil
 	}
@@ -163,7 +163,7 @@ REGENERATE_CONFIG_VALUES:
 
 	err = json.Unmarshal(j, &G)
 	if err != nil {
-		logs.Fatal(errors.Wrap(err, "read err 2").Error())
+		logs.Fatal(errors.Wrap(err, "read err 2"))
 	}
 
 	return nil

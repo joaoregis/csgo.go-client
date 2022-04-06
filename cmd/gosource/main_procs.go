@@ -53,7 +53,6 @@ func clientMainLoop() {
 			break
 		}
 	}
-
 }
 
 func wndProc(hWnd win.HWND, Msg uint32, wParam uintptr, lParam uintptr) uintptr {

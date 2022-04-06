@@ -5,13 +5,25 @@ import (
 	"log"
 )
 
-func Fatal(fmt string, args ...interface{}) {
+func Fatal(args ...interface{}) {
+	log.SetPrefix("[Fatal] ")
+	log.Fatal(args...)
+}
+
+func Fatalf(fmt string, args ...interface{}) {
 	log.SetPrefix("[Fatal] ")
 	m := global.SPRINT_F(fmt, args...)
 	log.Fatal(m)
 }
 
-func Debug(fmt string, args ...interface{}) {
+func Debug(args ...any) {
+	if global.LOG_DEBUG {
+		log.SetPrefix("[Debug] ")
+		log.Println(args...)
+	}
+}
+
+func Debugf(fmt string, args ...interface{}) {
 	if global.LOG_DEBUG {
 		log.SetPrefix("[Debug] ")
 		m := global.SPRINT_F(fmt, args...)
@@ -19,7 +31,14 @@ func Debug(fmt string, args ...interface{}) {
 	}
 }
 
-func Info(fmt string, args ...interface{}) {
+func Info(args ...any) {
+	if global.VERBOSE {
+		log.SetPrefix("[Info] ")
+		log.Println(args...)
+	}
+}
+
+func Infof(fmt string, args ...interface{}) {
 	if global.VERBOSE {
 		log.SetPrefix("[Info] ")
 		m := global.SPRINT_F(fmt, args...)
@@ -27,7 +46,14 @@ func Info(fmt string, args ...interface{}) {
 	}
 }
 
-func Error(fmt string, args ...interface{}) {
+func Error(args ...any) {
+	if global.LOG_ERRORS {
+		log.SetPrefix("[Error] ")
+		log.Println(args...)
+	}
+}
+
+func Errorf(fmt string, args ...interface{}) {
 	if global.LOG_ERRORS {
 		log.SetPrefix("[Error] ")
 		m := global.SPRINT_F(fmt, args...)
@@ -35,7 +61,14 @@ func Error(fmt string, args ...interface{}) {
 	}
 }
 
-func Warn(fmt string, args ...interface{}) {
+func Warn(args ...any) {
+	if global.LOG_WARNINGS {
+		log.SetPrefix("[Warn] ")
+		log.Println(args...)
+	}
+}
+
+func Warnf(fmt string, args ...interface{}) {
 	if global.LOG_WARNINGS {
 		log.SetPrefix("[Warn] ")
 		m := global.SPRINT_F(fmt, args...)
