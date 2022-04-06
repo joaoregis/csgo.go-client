@@ -1,5 +1,29 @@
 package configs
 
+type ConfigDataESP struct {
+	Enabled          bool                     `json:"enabled"`
+	AllyBoundingBox  ConfigDataESPBoundingBox `json:"allyBox"`
+	EnemyBoundingBox ConfigDataESPBoundingBox `json:"enemyBox"`
+	DrawSnapLines    bool                     `json:"snapLines"`
+}
+
+type ConfigDataESPBoundingBox struct {
+	Enabled               bool    `json:"enabled"`
+	DrawBox               bool    `json:"box"`
+	Layout                int     `json:"layout"` // 2d, 2d corners, 3d
+	Outline               bool    `json:"outline"`
+	OutlineColor          string  `json:"outlineColor"`
+	Color                 string  `json:"color"`
+	ColorAlpha            float32 `json:"alpha"`
+	IsColorHealthBasedBox bool    `json:"healthBased"`
+	FullfillBox           bool    `json:"fullFillBox"`
+	FullfillBoxColor      string  `json:"fullFillBoxColor"`
+	FullfillBoxColorAlpha float32 `json:"fullFillBoxColorAlpha"`
+	DrawName              bool    `json:"name"`
+	DrawHealth            bool    `json:"health"`
+	Thickness             float32 `json:"thickness"`
+}
+
 type ConfigDataGlow struct {
 	Enabled       bool    `json:"enabled"`
 	BaseColor     string  `json:"glowBaseColor"`
@@ -30,10 +54,10 @@ type ConfigData struct {
 	ReloadKey   string                `json:"reloadKey"`
 	StopKey     string                `json:"stopKey"`
 	Radar       bool                  `json:"radar"`
-	EngineChams bool                  `json:"engineChams"`
 	Bunnyhop    bool                  `json:"bhop"`
 	Glow        ConfigDataGlow        `json:"glow"`
 	Triggerbot  ConfigDataTrigger     `json:"trigger"`
 	AutoWeapons ConfigDataAutoWeapons `json:"autoWeapons"`
 	Aimbot      ConfigDataAimbot      `json:"aimbot"`
+	ESP         ConfigDataESP         `json:"esp"`
 }

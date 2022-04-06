@@ -1,18 +1,21 @@
 package memory
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"math"
+	"os"
 	"regexp"
 	"strings"
 	"unsafe"
 
+	"gosource/internal/csgo/offsets"
 	"gosource/internal/hackFunctions/vector"
-	"gosource/internal/offsets"
 
 	"github.com/Xustyx/w32"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -445,4 +448,52 @@ func (p *Process) AOBScan(mod Module, pattern string, dereference bool, offset i
 	}
 
 	return uintptr(0), fmt.Errorf("pattern not found")
+}
+
+func ToStruct[T any](data []byte) (*T, error) {
+
+	var dummy T
+	b := bytes.NewBuffer(data)
+	err := binary.Read(b, binary.LittleEndian, &dummy)
+
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	return &dummy, nil
+}
+
+func Read[T any](p *Process, address uintptr) (*T, error) {
+
+	var dummy T
+	var uSize uint = uint(unsafe.Sizeof(dummy))
+	_, _, _ = procReadProcessMemory.Call(
+		uintptr(p.Handle),               // process handle
+		address,                         // lpAddress of object start in memory
+		uintptr(unsafe.Pointer(&dummy)), // object-structured pointer
+		uintptr(uSize),                  // length of data
+		uintptr(unsafe.Pointer(&uSize)), // total of bytes read
+	)
+
+	return &dummy, nil
+}
+
+func Write[T any](p *Process, address uintptr, target *T) {
+
+	var err error
+
+	buf := new(bytes.Buffer)
+	err = binary.Write(buf, binary.LittleEndian, target)
+	if err != nil {
+		log.Println(errors.Wrap(err, "0x0000003"))
+		os.Exit(1)
+	}
+
+	err = p.WriteBytes(address, buf.Bytes())
+	if err != nil {
+		log.Println(errors.Wrap(err, "0x0000004"))
+		os.Exit(1)
+	}
+
 }

@@ -1,4 +1,4 @@
-package weapons
+package csgo
 
 type Weapon int64
 

@@ -1,8 +1,13 @@
 package global
 
 const (
-	DEBUG_MODE	  	 = true
-	CONFIG_VERSION	 = 1
-	APP_UUID_4_GO	 = "f71eac92-28db-4617-82b0-daf4282aa862"
-	APP_HASH_ENC_KEY = "KndyJvltmd7RdszW1MQMUG74ENjT87l5"
+	DEBUG_MODE       		= false
+	VERBOSE          		= true
+	LOG_DEBUG        		= false
+	LOG_ERRORS       		= false
+	LOG_WARNINGS     		= false
+	DO_NOT_ENCRYPT_CONFIG 	= true
+	CONFIG_VERSION	 		= 1
+	APP_UUID_4_GO	 		= "f71eac92-28db-4617-82b0-daf4282aa862"
+	APP_HASH_ENC_KEY 		= "KndyJvltmd7RdszW1MQMUG74ENjT87l5"
 )

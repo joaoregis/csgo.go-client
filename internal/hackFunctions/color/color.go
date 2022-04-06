@@ -28,11 +28,16 @@ func ConvertHexToRGB(hex Hex) (*RGB, error) {
 	return &rgb, nil
 }
 
-func ConvertRGBToFloat(rgb RGB) *RGBA {
-	return &RGBA{Red: float32(rgb.Red) / 255.0, Green: float32(rgb.Green) / 255.0, Blue: float32(rgb.Blue) / 255.0, Alpha: 1}
+func ConvertRGBToFloat(rgb RGB, alpha *float32) *RGBA {
+	result := &RGBA{Red: float32(rgb.Red) / 255.0, Green: float32(rgb.Green) / 255.0, Blue: float32(rgb.Blue) / 255.0, Alpha: 1}
+	if alpha != nil {
+		result.Alpha = *alpha
+	}
+
+	return result
 }
 
-func HexToRGBA(hex Hex) *RGBA {
+func HexToRGBA(hex Hex, alpha *float32) *RGBA {
 	rgb, err := ConvertHexToRGB(hex)
 
 	if err != nil {
@@ -40,5 +45,5 @@ func HexToRGBA(hex Hex) *RGBA {
 		return &RGBA{}
 	}
 
-	return ConvertRGBToFloat(*rgb)
+	return ConvertRGBToFloat(*rgb, alpha)
 }

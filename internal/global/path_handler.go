@@ -30,7 +30,7 @@ func IsConfigExists() bool {
 
 func GetConfigName() string {
 
-	if DEBUG_MODE {
+	if DO_NOT_ENCRYPT_CONFIG {
 		clientHwidHash := fmt.Sprintf("%x", sha256.Sum256([]byte(HARDWARE_ID+"-dbg")))
 		return clientHwidHash[:16]
 	}
