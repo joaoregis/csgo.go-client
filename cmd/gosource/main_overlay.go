@@ -81,7 +81,7 @@ func beginFrame() bool {
 
 	}
 
-	global.HWND_GAME_RECT = utils.GetClientRect(global.HWND_GAME)
+	win.GetClientRect(global.HWND_GAME, &global.HWND_GAME_RECT)
 	global.HWND_GAME_POS = utils.GetLocalCoordinates(global.HWND_GAME)
 
 	win.SetWindowPos(
