@@ -1,6 +1,8 @@
 package global
 
 import (
+	"fmt"
+
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/joaoregis/machineid"
 	"github.com/lxn/win"
@@ -11,11 +13,14 @@ var (
 	CONFIG_NAME             = GetConfigName() + ".cfg"
 	CONFIG_NAME_WITHOUT_EXT = GetConfigName()
 	USER_HOME_PATH          = GetUserHomePath()
+	SPRINT_F                = fmt.Sprintf
 )
 
 var (
-	HWND         win.HWND
-	HWND_RECT    win.RECT
-	WINDOW       *glfw.Window
-	OVERLAY_HWND win.HWND
+	HWND_GAME      win.HWND
+	HWND_GAME_POS  win.RECT
+	HWND_GAME_RECT win.RECT
+	HWND_GAME_SIZE win.RECT
+	HWND_OVERLAY   win.HWND
+	WINDOW_OVERLAY *glfw.Window
 )

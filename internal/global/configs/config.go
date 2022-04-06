@@ -2,7 +2,6 @@ package configs
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"gosource/internal/csgo/offsets"
 	"gosource/internal/global"
@@ -11,6 +10,8 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type Config struct {
@@ -29,6 +30,11 @@ func Init() {
 }
 
 func Reload() {
+
+	if !global.IsConfigExists() {
+		write()
+	}
+
 	read()
 	fmt.Println("config reloaded successfully.")
 }
@@ -107,6 +113,7 @@ func read() error {
 	path := getFilePath()
 	file, _ := os.Open(path)
 	j, _ := ioutil.ReadAll(file)
+	file.Close()
 
 	if !global.DEBUG_MODE {
 
@@ -122,36 +129,46 @@ func read() error {
 
 	var dummy map[string]interface{}
 	if err = json.Unmarshal(j, &dummy); err != nil {
-		fmt.Println("read err 1")
-		log.Fatal(err)
-		return err
+		log.Println(errors.Wrap(err, "first read => cannot recover data. config will be regenerated."))
+		goto REGENERATE_CONFIG_VALUES
 	}
 
 	fmt.Printf("detected config version: %s | current config version: %s \n", dummy["version"], global.CONFIG_VERSION)
-	if dummy["version"] != global.CONFIG_VERSION {
-		// version has changed, need to be updated
-		err = json.Unmarshal(j, &G)
-		if err != nil {
-			fmt.Printf("cannot recover data. config will be regenerated.\n")
-			G = defaultConfig()
-			write()
-		} else {
-			// read successfully
-			fmt.Printf("config updated successfully.\n")
-			G.Version = global.CONFIG_VERSION
-
-			/* New features need to be defined here. Theres nothing to do about that */
-			G.D.ESP = newConfigEntry_defaultValues_ESP()
-
-			write()
-		}
+	if dummy["version"] == global.CONFIG_VERSION {
+		return nil
 	}
+
+	// version has changed, need to be updated
+	err = json.Unmarshal(j, &G)
+	if err == nil {
+
+		// read successfully
+		fmt.Printf("config updated successfully.\n")
+		G.Version = global.CONFIG_VERSION
+
+		/* New features need to be defined here. Theres nothing to do about that */
+		G.D.ESP = newConfigEntry_defaultValues_ESP()
+
+		write()
+
+		return nil
+	}
+
+	// Should NEVER fall here in this return statement. But if this occurs, this should be blocked and return immediatelly.
+	return nil
+
+REGENERATE_CONFIG_VALUES:
+	G = defaultConfig()
+	write()
+
+	file, _ = os.Open(path)
+	j, _ = ioutil.ReadAll(file)
+	defer file.Close()
 
 	err = json.Unmarshal(j, &G)
 	if err != nil {
 		fmt.Println("read err 2")
 		log.Fatal(err)
-		return err
 	}
 
 	return nil
@@ -164,7 +181,7 @@ func defaultConfig() Config {
 		D: ConfigData{
 			ReloadKey: "Insert",
 			StopKey:   "Delete",
-			Radar:     false,
+			Radar:     true,
 			Bunnyhop:  false,
 			Glow: ConfigDataGlow{
 				Enabled:       true,
@@ -173,7 +190,7 @@ func defaultConfig() Config {
 				IsHealthBased: false,
 			},
 			Triggerbot: ConfigDataTrigger{
-				Enabled: false,
+				Enabled: true,
 				Key:     "Mouse 5",
 				Delay:   50,
 			},
@@ -206,17 +223,17 @@ func newConfigEntry_defaultValues_ESP_BoundingBox(e bool) ConfigDataESPBoundingB
 		Enabled:               e,
 		DrawBox:               true,
 		Layout:                0,
-		Outline:               false,
+		Outline:               true,
 		OutlineColor:          "#000000",
 		Color:                 "#6821a6",
 		ColorAlpha:            .5,
 		IsColorHealthBasedBox: false,
-		FullfillBox:           true,
-		FullfillBoxColor:      "#333333",
+		FullfillBox:           false,
+		FullfillBoxColor:      "#222222",
 		FullfillBoxColorAlpha: 0.4,
 		DrawName:              true,
 		DrawHealth:            true,
-		Thickness:             4,
+		Thickness:             3,
 	}
 }
 

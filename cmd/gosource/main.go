@@ -2,10 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gosource/internal/csgo"
 	"gosource/internal/csgo/offsets"
-	"gosource/internal/csgo/sdk"
-	"gosource/internal/features"
 	"gosource/internal/global"
 	"gosource/internal/global/configs"
 	"gosource/internal/global/utils"
@@ -13,7 +10,6 @@ import (
 	"gosource/internal/memory"
 	"log"
 	"runtime"
-	"strings"
 	"syscall"
 	"time"
 	"unsafe"
@@ -23,9 +19,13 @@ import (
 	"github.com/lxn/win"
 )
 
+type VoidFunc func()
+type VoidRetErrorFunc func()
+
 var (
-	PROJECT_NAME    = "CSGO.GO"
-	BUILD_TIMESTAMP = "development"
+	PROJECT_NAME      = "CSGO.GO"
+	BUILD_TIMESTAMP   = "development"
+	IS_OVERLAY_ACTIVE = false
 )
 
 func init() {
@@ -35,22 +35,10 @@ func init() {
 
 }
 
-func WndProc(hWnd win.HWND, Msg uint32, wParam uintptr, lParam uintptr) uintptr {
-
-	if Msg == win.WM_NCHITTEST {
-		return win.HTNOWHERE
-	}
-
-	return win.DefWindowProc(hWnd, Msg, wParam, lParam)
-
-}
-
-var AlreadyShowed bool = false
-
 func main() {
 
-	for global.HWND == 0 {
-		global.HWND = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
+	for global.HWND_GAME == 0 {
+		global.HWND_GAME = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
 		fmt.Println("awaiting for csgo ...")
 		time.Sleep(1000 * time.Millisecond)
 	}
@@ -68,17 +56,15 @@ func main() {
 	glfw.WindowHint(glfw.Resizable, glfw.False)
 	glfw.WindowHint(glfw.TransparentFramebuffer, glfw.True)
 
-	global.WINDOW, err = glfw.CreateWindow(1, 1, global.HARDWARE_ID, nil, nil)
+	global.WINDOW_OVERLAY, err = glfw.CreateWindow(1, 1, global.HARDWARE_ID, nil, nil)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer global.WINDOW.Destroy()
-
-	global.WINDOW.SetAttrib(glfw.Decorated, glfw.False)
-
-	global.WINDOW.MakeContextCurrent()
+	defer global.WINDOW_OVERLAY.Destroy()
+	global.WINDOW_OVERLAY.SetAttrib(glfw.Decorated, glfw.False)
+	global.WINDOW_OVERLAY.MakeContextCurrent()
 
 	glfw.SwapInterval(1)
 
@@ -87,7 +73,6 @@ func main() {
 	}
 
 	global.InitFonts()
-
 	/**** END: OPEN-GL INITIALIZATION ****/
 
 	/* After initialization of opengl */
@@ -95,11 +80,9 @@ func main() {
 
 	if global.DEBUG_MODE {
 
-		fmt.Println("=====================================================================================")
-		fmt.Println("hardware id: ", global.HARDWARE_ID)
-		fmt.Println("default dir: ", global.USER_HOME_PATH)
-		fmt.Println("config file: ", global.CONFIG_NAME)
-		fmt.Println("=====================================================================================")
+		fmt.Println("NOTE: you are using a work-in-progress version of our client")
+		fmt.Println("NOTE: keep-in-mind that this can have several bugs")
+		fmt.Println("NOTE: this version isn't the true experience that we want to delivery")
 
 	}
 
@@ -121,121 +104,18 @@ func main() {
 	updateOffsetsByPatterns()
 
 	// Overlay hit test handling
-	global.OVERLAY_HWND = win.HWND(uintptr(unsafe.Pointer(global.WINDOW.GetWin32Window())))
-	wproc := syscall.NewCallback(WndProc)
-	win.SetWindowLongPtr(global.OVERLAY_HWND, win.GWLP_WNDPROC, wproc)
-	extendedStyle := win.GetWindowLong(global.OVERLAY_HWND, win.GWL_EXSTYLE)
-	win.SetWindowLong(global.OVERLAY_HWND, win.GWL_EXSTYLE, extendedStyle|win.WS_EX_TRANSPARENT|win.WS_EX_LAYERED|win.WS_EX_NOACTIVATE)
+	global.HWND_OVERLAY = win.HWND(uintptr(unsafe.Pointer(global.WINDOW_OVERLAY.GetWin32Window())))
+	wproc := syscall.NewCallback(wndProc)
+	win.SetWindowLongPtr(global.HWND_OVERLAY, win.GWLP_WNDPROC, wproc)
+	extendedStyle := win.GetWindowLong(global.HWND_OVERLAY, win.GWL_EXSTYLE)
+	win.SetWindowLong(global.HWND_OVERLAY, win.GWL_EXSTYLE, extendedStyle|win.WS_EX_TRANSPARENT|win.WS_EX_LAYERED|win.WS_EX_NOACTIVATE)
 
 	// create bitmaps for the device context font's first 256 glyphs
-	win.WglUseFontBitmaps(win.HDC(global.OVERLAY_HWND), 0, 256, 1000)
+	win.WglUseFontBitmaps(win.HDC(global.HWND_OVERLAY), 0, 256, 1000)
 
-	// View Matrix Update Loop
-	go func() {
-		for !global.WINDOW.ShouldClose() && global.HWND != 0 {
-			sdk.UpdateViewMatrix()
-		}
-	}()
-
-	// Mainloop
-	fmt.Println("everything is fine. good hacking.")
-	for !global.WINDOW.ShouldClose() && global.HWND != 0 {
-
-		display_w, display_h := glfw.GetCurrentContext().GetFramebufferSize()
-		gl.Viewport(0, 0, int32(display_w), int32(display_h))
-		global.WINDOW.SwapBuffers()
-		glfw.PollEvents()
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-
-		global.HWND_RECT = utils.GetClientRect(global.HWND)
-		global.WINDOW.SetSize(int(global.HWND_RECT.Right), int(global.HWND_RECT.Bottom))
-
-		hCsPositionOnScreen := utils.GetLocalCoordinates(global.HWND)
-		global.WINDOW.SetPos(int(hCsPositionOnScreen.Left), int(hCsPositionOnScreen.Top))
-
-		// only will perform client actions when counter-strike is focused
-		if hwnd := win.GetForegroundWindow(); hwnd != 0 {
-
-			hwndText := memory.GetWindowText(memory.HWND(hwnd))
-			if !strings.Contains(hwndText, "Counter-Strike: Global Offensive") {
-				if AlreadyShowed {
-					global.WINDOW.Hide()
-					AlreadyShowed = false
-				}
-				continue
-			}
-
-			if !AlreadyShowed {
-
-				AlreadyShowed = true
-				global.WINDOW.Show()
-
-			}
-
-		}
-
-		win.BringWindowToTop(global.OVERLAY_HWND)
-		win.SetFocus(global.HWND)
-
-		//
-		if csgo.UpdatePlayerVars() != nil {
-			continue
-		}
-
-		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.D.ReloadKey)) {
-			configs.Reload()
-		}
-
-		if keyboard.GetAsyncKeyStateOnce(keyboard.GetKey(configs.G.D.StopKey)) {
-			global.WINDOW.SetShouldClose(true)
-		}
-
-		// skip these features when cursor is enabled
-		if !csgo.IsCursorEnabled() {
-
-			features.Visuals()
-			features.AutoWeapons()
-			features.Triggerbot()
-			features.BunnyHop()
-			features.Aimbot()
-
-		}
-
-		if global.WINDOW.ShouldClose() {
-			break
-		}
-
-		global.HWND = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
-
-		// Rendering
-		gl.Flush()
-
-	}
+	go clientVMatrixLoop()
+	clientMainLoop()
 
 	endCheat()
 	fmt.Println("good bye. cya!")
-}
-
-func endCheat() {
-	fmt.Println("clearing client residues ...")
-}
-
-func updateOffsetsByPatterns() {
-
-	var patterns = map[string]string{
-		"DwEntityList":        "BB ? ? ? ? 83 FF 01 0F 8C ? ? ? ? 3B F8",
-		"DwForceAttack":       "89 0D ? ? ? ? 8B 0D ? ? ? ? 8B F2 8B C1 83 CE 04",
-		"DwForceJump":         "8B 0D ? ? ? ? 8B D6 8B C1 83 CA 02",
-		"DwLocalPlayer":       "8D 34 85 ? ? ? ? 89 15 ? ? ? ? 8B 41 08 8B 48 04 83 F9 FF",
-		"DwGlowObjectManager": "A1 ? ? ? ? A8 01 75 4B",
-		"DwClientState":       "A1 ? ? ? ? 33 D2 6A 00 6A 00 33 C9 89 B0",
-	}
-
-	configs.Offsets.Signatures.DwEntityList, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwEntityList"], true, 0x1, 0x0)
-	configs.Offsets.Signatures.DwForceAttack, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwForceAttack"], true, 0x2, 0x0)
-	configs.Offsets.Signatures.DwForceJump, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwForceJump"], true, 0x2, 0x0)
-	configs.Offsets.Signatures.DwLocalPlayer, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwLocalPlayer"], true, 0x3, 0x4)
-	configs.Offsets.Signatures.DwGlowObjectManager, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Client], patterns["DwGlowObjectManager"], true, 0x1, 0x4)
-	configs.Offsets.Signatures.DwClientState, _ = memory.GameProcess.FindOffset(memory.GameProcess.Modules[offsets.Engine], patterns["DwClientState"], true, 0x1, 0x0)
-
 }

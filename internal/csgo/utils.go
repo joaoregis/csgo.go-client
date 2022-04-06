@@ -56,7 +56,7 @@ func WorldToScreen(VecOrigin *vector.Vector3, VecScreen *vector.Vector2) bool {
 	NDC.Y = clipCoords.Y / clipCoords.W
 	NDC.Z = clipCoords.Z / clipCoords.W
 
-	w, h := global.WINDOW.GetSize()
+	w, h := global.WINDOW_OVERLAY.GetSize()
 	VecScreen.X = (float64(w) / 2 * NDC.X) + (NDC.X + float64(w)/2)
 	VecScreen.Y = (float64(h) / 2 * NDC.Y) + (NDC.Y + float64(h)/2)
 
