@@ -1,5 +1,9 @@
 # Changelog for Client Updates
 
+## **v0.2.2 (06-04-2022)**
+
+- Fix an issue when client host hwid is not recognized
+
 ## **v0.2.1 (06-04-2022)**
 
 - Added HWID checking when client starts
