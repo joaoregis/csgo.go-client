@@ -20,7 +20,7 @@
 
 ### **New:**
 
-- New external OpenGL overlay above the game window and other processes*****
+- New external OpenGL overlay above the game window and other processes
 - New ESP feature with sub-features:
   - Ally and Enemy ESP
   - Player boxes
