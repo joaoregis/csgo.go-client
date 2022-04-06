@@ -13,15 +13,13 @@ This client don't have any relations to Valve or similar, and use this on online
 |Option | Description  |
 |---|---|
 |Glow| Draw and outline around your enemies|
+|ESP Visuals| OpenGL overlay that render in-game info about your enemies|
 |Auto Weapons| Auto shot for weapons that isn't full auto (pistols)|
-|Engine Chams| Colorized model for enemies to improve your visibility|
 |Radar Hack| Spot enemies on your in-game radar|
 |Bunnyhop| Auto-jump based bhop to allow you better movements|
 |Triggerbot| Auto shoot against your enemies when someone is in your crosshair|
 |Aimbot| Auto aim at your enemies to improve your accuracy|
 
-> ~~*All features are customizable via `\configs\config.json` file*~~
-<br />
 > Now, configs are available on your default documents folder
 
 ---
@@ -29,4 +27,5 @@ This client don't have any relations to Valve or similar, and use this on online
 ## CGO Issues relatable commands
 
 > ```go env -w CGO_ENABLED=1```
-> ```go env -w CGO_CPPFLAGS="-g -O2 -m32"```
+> ```go env -w CGO_CFLAGS="-g -O2 -m32 -w"```
+> ```go env -w CGO_CPPFLAGS="-g -O2 -m32 -w"```
