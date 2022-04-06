@@ -5,6 +5,14 @@ import (
 	"log"
 )
 
+func Fatal(fmt string, args ...interface{}) {
+	if global.LOG_DEBUG {
+		log.SetPrefix("[Debug]")
+		m := global.SPRINT_F(fmt, args...)
+		log.Fatal(m)
+	}
+}
+
 func Debug(fmt string, args ...interface{}) {
 	if global.LOG_DEBUG {
 		log.SetPrefix("[Debug]")
