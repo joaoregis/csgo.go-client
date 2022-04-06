@@ -20,6 +20,7 @@ type Config struct {
 
 func Init() {
 
+	logs.Info("initializing configs ...")
 	if !global.IsConfigExists() {
 		write()
 	}
@@ -30,6 +31,7 @@ func Init() {
 
 func Reload() {
 
+	logs.Info("reloading configs ...")
 	if !global.IsConfigExists() {
 		write()
 	}
@@ -95,7 +97,7 @@ func write() error {
 	}
 
 	content := string(j)
-	logs.Debug("%s\n", content)
+	logs.Debug("\n%s\n", content)
 	file.WriteString(content)
 
 	return nil
@@ -131,10 +133,13 @@ func read() error {
 
 	logs.Infof("detected config version: %s | current config version: %s", dummy["version"], global.CONFIG_VERSION)
 	if dummy["version"] == global.CONFIG_VERSION {
-		return nil
+
+		logs.Info("parsing config bytes into client memory")
+		goto READ_CONFIG_ENTRIES
+
 	}
 
-	// version has changed, need to be updated
+	// version has changed, need to be updated and save
 	err = json.Unmarshal(j, &G)
 	if err == nil {
 
@@ -157,6 +162,7 @@ REGENERATE_CONFIG_VALUES:
 	G = defaultConfig()
 	write()
 
+READ_CONFIG_ENTRIES:
 	file, _ = os.Open(path)
 	j, _ = ioutil.ReadAll(file)
 	defer file.Close()
