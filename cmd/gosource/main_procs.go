@@ -26,14 +26,12 @@ func clientMainLoop() {
 
 		if b := beginFrame(); !b {
 			// Should go to the next frame
-			logs.Debug("skipped frame")
 			finishFrame()
 			continue
 		}
 
 		//
 		if csgo.UpdatePlayerVars() != nil {
-			logs.Debug("cannot update player vars")
 			continue
 		}
 
@@ -48,8 +46,6 @@ func clientMainLoop() {
 			features.BunnyHop()
 			features.Aimbot()
 
-		} else {
-			logs.Debug("cursor is enabled, preventing features from working")
 		}
 
 		if b := finishFrame(); !b {
