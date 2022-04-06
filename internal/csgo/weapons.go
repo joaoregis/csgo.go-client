@@ -70,6 +70,8 @@ func IsAimbotable(wIdx int) bool {
 		Negev,
 		Sawedoff,
 		Nova,
+		Scar20,
+		G3SG1,
 	}
 
 	return contains(items, wIdx)
