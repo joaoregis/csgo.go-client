@@ -1,7 +1,10 @@
 package main
 
 import (
+	"gosource/internal/global"
 	"runtime"
+
+	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 type VoidFunc func()
@@ -23,7 +26,11 @@ func init() {
 func main() {
 
 	initGameHwnd()
+
 	initOpenGL()
+	defer glfw.Terminate()
+	defer global.WINDOW_OVERLAY.Destroy()
+
 	initClientHeader()
 	postInitOpenGL()
 	go clientVMatrixLoop()

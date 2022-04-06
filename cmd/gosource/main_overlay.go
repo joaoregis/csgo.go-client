@@ -38,7 +38,6 @@ func initOpenGL() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer glfw.Terminate()
 
 	glfw.WindowHint(glfw.Floating, glfw.True)
 	glfw.WindowHint(glfw.Resizable, glfw.False)
@@ -50,7 +49,6 @@ func initOpenGL() {
 		log.Fatal(err)
 	}
 
-	defer global.WINDOW_OVERLAY.Destroy()
 	global.WINDOW_OVERLAY.SetAttrib(glfw.Decorated, glfw.False)
 	global.WINDOW_OVERLAY.MakeContextCurrent()
 
