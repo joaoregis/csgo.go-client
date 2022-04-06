@@ -1,5 +1,10 @@
 # Changelog for Client Updates
 
+## **v0.2.1 (06-04-2022)**
+
+- Added HWID checking when client starts
+- Added hash version validator
+
 ## **v0.2.0 (06-04-2022)**
 
 > Note: This update changes A LOT of things, behaviors and features of our client. This version has been tested and improved in the last few days, but it can contain some bugs that can impact your experience. We highly recommend to backup your old config files before update.
