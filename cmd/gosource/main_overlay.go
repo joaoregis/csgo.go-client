@@ -2,14 +2,68 @@ package main
 
 import (
 	"gosource/internal/global"
+	"gosource/internal/global/logs"
 	"gosource/internal/global/utils"
 	"gosource/internal/memory"
+	"log"
 	"strings"
+	"syscall"
+	"unsafe"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/lxn/win"
 )
+
+func postInitOpenGL() {
+
+	// Overlay hit test handling
+	global.HWND_OVERLAY = win.HWND(uintptr(unsafe.Pointer(global.WINDOW_OVERLAY.GetWin32Window())))
+	wproc := syscall.NewCallback(wndProc)
+	win.SetWindowLongPtr(global.HWND_OVERLAY, win.GWLP_WNDPROC, wproc)
+	extendedStyle := win.GetWindowLong(global.HWND_OVERLAY, win.GWL_EXSTYLE)
+	win.SetWindowLong(global.HWND_OVERLAY, win.GWL_EXSTYLE, extendedStyle|win.WS_EX_TRANSPARENT|win.WS_EX_LAYERED|win.WS_EX_NOACTIVATE)
+
+	// create bitmaps for the device context font's first 256 glyphs
+	win.WglUseFontBitmaps(win.HDC(global.HWND_OVERLAY), 0, 256, 1000)
+
+}
+
+func initOpenGL() {
+
+	/**** START: OPEN-GL INITIALIZATION ****/
+	logs.Info("initializing resources ...")
+
+	err := glfw.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer glfw.Terminate()
+
+	glfw.WindowHint(glfw.Floating, glfw.True)
+	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.TransparentFramebuffer, glfw.True)
+
+	global.WINDOW_OVERLAY, err = glfw.CreateWindow(1, 1, global.HARDWARE_ID, nil, nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer global.WINDOW_OVERLAY.Destroy()
+	global.WINDOW_OVERLAY.SetAttrib(glfw.Decorated, glfw.False)
+	global.WINDOW_OVERLAY.MakeContextCurrent()
+
+	glfw.SwapInterval(1)
+
+	if err := gl.Init(); err != nil {
+		log.Fatal(err)
+	}
+
+	global.InitFonts()
+	/**** END: OPEN-GL INITIALIZATION ****/
+
+}
 
 func beginFrame() bool {
 

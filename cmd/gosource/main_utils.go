@@ -2,13 +2,65 @@ package main
 
 import (
 	"gosource/internal/csgo/offsets"
+	"gosource/internal/global"
 	"gosource/internal/global/configs"
 	"gosource/internal/global/logs"
+	"gosource/internal/global/utils"
+	"gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/memory"
+	"time"
 )
 
-func endCheat() {
+func initClientHeader() {
+
+	utils.SetConsoleTitle(PROJECT_NAME + " - build: " + BUILD_TIMESTAMP)
+
+	if global.DEBUG_MODE {
+
+		logs.Warn("NOTE: you are using a work-in-progress version of our client")
+		logs.Warn("NOTE: keep-in-mind that this can have several bugs")
+		logs.Warn("NOTE: this version isn't the true experience that we want to delivery")
+
+	}
+
+	logs.Info("getting latest offsets for current game version")
+	offsets.InitOffsets(&configs.Offsets)
+
+	logs.Info("initializing key functions")
+	keyboard.InitKeys()
+
+	initMemory()
+
+	logs.Info("initializing user configs")
+	configs.Init()
+
+	logs.Info("scanning for new game patterns")
+	updateOffsetsByPatterns()
+
+}
+
+func initMemory() {
+
+	for !memory.Init() {
+		logs.Info("initializing memory module ...")
+		time.Sleep(1000 * time.Millisecond)
+	}
+
+}
+
+func initGameHwnd() {
+
+	for global.HWND_GAME == 0 {
+		global.HWND_GAME = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
+		logs.Info("awaiting for csgo ...")
+		time.Sleep(1000 * time.Millisecond)
+	}
+
+}
+
+func gracefulExit() {
 	logs.Info("clearing client residues ...")
+	logs.Info("good bye. cya!")
 }
 
 func updateOffsetsByPatterns() {
