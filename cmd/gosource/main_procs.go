@@ -3,7 +3,6 @@ package main
 /* Main package private members */
 
 import (
-	"fmt"
 	"gosource/internal/csgo"
 	"gosource/internal/csgo/sdk"
 	"gosource/internal/features"
@@ -22,7 +21,7 @@ func clientVMatrixLoop() {
 func clientMainLoop() {
 
 	// Mainloop
-	fmt.Println("everything is fine. good hacking.")
+	logs.Info("everything is fine. good hacking.")
 	for !global.WINDOW_OVERLAY.ShouldClose() && global.HWND_GAME != 0 {
 
 		if b := beginFrame(); !b {
@@ -34,7 +33,7 @@ func clientMainLoop() {
 
 		//
 		if csgo.UpdatePlayerVars() != nil {
-			fmt.Println("cannot update player vars")
+			logs.Debug("cannot update player vars")
 			continue
 		}
 
@@ -50,7 +49,7 @@ func clientMainLoop() {
 			features.Aimbot()
 
 		} else {
-			fmt.Println("cursor is enabled, preventing features from working")
+			logs.Debug("cursor is enabled, preventing features from working")
 		}
 
 		if b := finishFrame(); !b {

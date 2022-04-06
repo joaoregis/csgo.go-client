@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"gosource/internal/csgo/offsets"
 	"gosource/internal/global"
 	"gosource/internal/global/configs"
+	"gosource/internal/global/logs"
 	"gosource/internal/global/utils"
 	"gosource/internal/hackFunctions/keyboard"
 	"gosource/internal/memory"
@@ -39,12 +39,12 @@ func main() {
 
 	for global.HWND_GAME == 0 {
 		global.HWND_GAME = utils.FindWindow("Counter-Strike: Global Offensive - Direct3D 9")
-		fmt.Println("awaiting for csgo ...")
+		logs.Info("awaiting for csgo ...")
 		time.Sleep(1000 * time.Millisecond)
 	}
 
 	/**** START: OPEN-GL INITIALIZATION ****/
-	fmt.Println("initializing resources ...")
+	logs.Info("initializing resources ...")
 
 	err := glfw.Init()
 	if err != nil {
@@ -80,27 +80,27 @@ func main() {
 
 	if global.DEBUG_MODE {
 
-		fmt.Println("NOTE: you are using a work-in-progress version of our client")
-		fmt.Println("NOTE: keep-in-mind that this can have several bugs")
-		fmt.Println("NOTE: this version isn't the true experience that we want to delivery")
+		logs.Warn("NOTE: you are using a work-in-progress version of our client")
+		logs.Warn("NOTE: keep-in-mind that this can have several bugs")
+		logs.Warn("NOTE: this version isn't the true experience that we want to delivery")
 
 	}
 
-	fmt.Println("getting latest offsets for current game version")
+	logs.Info("getting latest offsets for current game version")
 	offsets.InitOffsets(&configs.Offsets)
 
-	fmt.Println("initializing key functions")
+	logs.Info("initializing key functions")
 	keyboard.InitKeys()
 
 	for !memory.Init() {
-		fmt.Println("trying to initialize the memory module ...")
+		logs.Info("trying to initialize the memory module ...")
 		time.Sleep(1000 * time.Millisecond)
 	}
 
-	fmt.Println("initializing user configs")
+	logs.Info("initializing user configs")
 	configs.Init()
 
-	fmt.Println("scanning for new game patterns")
+	logs.Info("scanning for new game patterns")
 	updateOffsetsByPatterns()
 
 	// Overlay hit test handling
@@ -117,5 +117,5 @@ func main() {
 	clientMainLoop()
 
 	endCheat()
-	fmt.Println("good bye. cya!")
+	logs.Info("good bye. cya!")
 }

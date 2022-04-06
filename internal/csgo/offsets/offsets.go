@@ -3,32 +3,33 @@ package offsets
 import (
 	"encoding/json"
 	"fmt"
+	"gosource/internal/global/logs"
 	"io/ioutil"
-	"log"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 const uri string = "https://raw.githubusercontent.com/frk1/hazedumper/master/csgo.min.json"
 
 func InitOffsets(o *GameOffset) {
 
-	fmt.Println("getting updated offsets from source ...")
+	logs.Info("getting updated offsets from source ...")
 	resp, err := http.Get(uri)
 	if err != nil {
-		log.Fatalln(err)
-		panic("cannot get updated offsets. aborting ...")
+		logs.Fatal(errors.Wrap(err, "cannot get updated offsets. aborting ...").Error())
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
-		panic("cannot read offsets. aborting ...")
+		logs.Fatal(errors.Wrap(err, "cannot read offsets. aborting ...").Error())
 	}
 
 	err = json.Unmarshal(b, o)
 	if err != nil {
+		logs.Fatal(errors.Wrap(err, "could not decode game offsets. aborting ...").Error())
 		fmt.Println(err)
-		panic("could not decode game offsets. aborting ...")
+		panic("")
 	}
 
 }

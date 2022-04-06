@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"gosource/internal/csgo/offsets"
 	"gosource/internal/global/configs"
+	"gosource/internal/global/logs"
 	"gosource/internal/memory"
 )
 
 func endCheat() {
-	fmt.Println("clearing client residues ...")
+	logs.Info("clearing client residues ...")
 }
 
 func updateOffsetsByPatterns() {
