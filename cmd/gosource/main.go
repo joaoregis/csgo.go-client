@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"gosource/internal/global"
 	"gosource/internal/global/logs"
 	"gosource/internal/global/utils"
+	"os"
 	"runtime"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -39,6 +41,8 @@ func main() {
 	if b := checkHwidAuth(); !b {
 		logs.Info("your hwid is not registered yet. please, submit it to a admin:")
 		logs.Info(utils.GetProtectHwid())
+		logs.Info("\nPress 'Enter' to continue...")
+		bufio.NewReader(os.Stdin).ReadBytes('\n')
 		return
 	}
 
