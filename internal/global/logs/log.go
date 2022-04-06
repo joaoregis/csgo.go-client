@@ -6,7 +6,7 @@ import (
 )
 
 func Debug(fmt string, args ...interface{}) {
-	if global.DEBUG_MODE {
+	if global.LOG_DEBUG {
 		log.SetPrefix("[Debug]")
 		m := global.SPRINT_F(fmt, args...)
 		log.Println(m)

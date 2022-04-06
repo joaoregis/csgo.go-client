@@ -3,6 +3,7 @@ package global
 const (
 	DEBUG_MODE       = false
 	VERBOSE          = true
+	LOG_DEBUG        = false
 	LOG_ERRORS       = false
 	LOG_WARNINGS     = false
 	CONFIG_VERSION	 = 1
