@@ -2,11 +2,10 @@ package configs
 
 import (
 	"encoding/json"
-	"fmt"
 	"gosource/internal/csgo/offsets"
 	"gosource/internal/global"
+	"gosource/internal/global/logs"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -26,7 +25,7 @@ func Init() {
 	}
 
 	read()
-	fmt.Println("config initialized successfully.")
+	logs.Info("config initialized successfully.")
 }
 
 func Reload() {
@@ -36,7 +35,7 @@ func Reload() {
 	}
 
 	read()
-	fmt.Println("config reloaded successfully.")
+	logs.Info("config reloaded successfully.")
 }
 
 func getDirPath() string {
@@ -69,7 +68,7 @@ func write() error {
 
 		err = os.WriteFile(path, j, os.ModeAppend)
 		if err != nil {
-			fmt.Println("write err 0")
+			logs.Warn("write err 0")
 			return err
 		}
 
@@ -79,7 +78,7 @@ func write() error {
 
 	file, err = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
-		fmt.Println("write err 1")
+		logs.Warn("write err 1")
 		return err
 	}
 
@@ -96,10 +95,7 @@ func write() error {
 	}
 
 	content := string(j)
-	if global.DEBUG_MODE {
-		fmt.Printf("%s\n", content)
-	}
-
+	logs.Debug("%s\n", content)
 	file.WriteString(content)
 
 	return nil
@@ -119,7 +115,7 @@ func read() error {
 
 		enc_check := strings.Split(string(j), ":")
 		if len(enc_check) != 2 || enc_check[0] != global.CONFIG_NAME_WITHOUT_EXT {
-			fmt.Println("cfg is not properly encrypted. delete it and regenerate a new one.")
+			logs.Warn("cfg is not properly encrypted. delete it and regenerate a new one.")
 			return errors.New("cfg encryption issue")
 		}
 
@@ -129,11 +125,11 @@ func read() error {
 
 	var dummy map[string]interface{}
 	if err = json.Unmarshal(j, &dummy); err != nil {
-		log.Println(errors.Wrap(err, "first read => cannot recover data. config will be regenerated."))
+		logs.Warn(errors.Wrap(err, "first read => cannot recover data. config will be regenerated.").Error())
 		goto REGENERATE_CONFIG_VALUES
 	}
 
-	fmt.Printf("detected config version: %s | current config version: %s \n", dummy["version"], global.CONFIG_VERSION)
+	logs.Info("detected config version: %s | current config version: %s \n", dummy["version"], global.CONFIG_VERSION)
 	if dummy["version"] == global.CONFIG_VERSION {
 		return nil
 	}
@@ -143,7 +139,7 @@ func read() error {
 	if err == nil {
 
 		// read successfully
-		fmt.Printf("config updated successfully.\n")
+		logs.Info("config updated successfully.\n")
 		G.Version = global.CONFIG_VERSION
 
 		/* New features need to be defined here. Theres nothing to do about that */
@@ -167,8 +163,7 @@ REGENERATE_CONFIG_VALUES:
 
 	err = json.Unmarshal(j, &G)
 	if err != nil {
-		fmt.Println("read err 2")
-		log.Fatal(err)
+		logs.Fatal(errors.Wrap(err, "read err 2").Error())
 	}
 
 	return nil
