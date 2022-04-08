@@ -1,6 +1,6 @@
 # Changelog for Client Updates
 
-## **v0.2.3 (07-04-2022)**
+## **v0.2.3 (08-04-2022)**
 
 - Add CfgPath on config file
 
