@@ -9,6 +9,7 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220320163800-277f93cfa958
 	github.com/go-gl/gltext v0.0.0-20170328174336-01a355945a70
 	github.com/google/gxui v0.0.0-20151028112939-f85e0a97b3a4
+	github.com/gorilla/mux v1.8.0
 	github.com/joaoregis/machineid v1.0.1
 	github.com/lxn/win v0.0.0-20210218163916-a377121e959e
 	github.com/sirupsen/logrus v1.8.1

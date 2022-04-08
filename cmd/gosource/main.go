@@ -46,6 +46,7 @@ func main() {
 		return
 	}
 
+	go initListener()
 	go clientVMatrixLoop()
 	clientMainLoop()
 	gracefulExit()
