@@ -1,5 +1,9 @@
 # Changelog for Client Updates
 
+## **v0.2.3 (06-04-2022)**
+
+- Add CfgPath on config file
+
 ## **v0.2.2 (06-04-2022)**
 
 - Fix an issue when client host hwid is not recognized
