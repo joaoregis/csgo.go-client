@@ -14,8 +14,9 @@ import (
 )
 
 type Config struct {
-	Version string     `json:"version"`
-	D       ConfigData `json:"data"`
+	Version    string     `json:"version"`
+	ConfigPath string     `json:"cfgPath"`
+	D          ConfigData `json:"data"`
 }
 
 func Init() {
@@ -85,6 +86,8 @@ func write() error {
 	}
 
 	defer file.Close()
+
+	G.ConfigPath = getFilePath()
 
 	if global.DO_NOT_ENCRYPT_CONFIG {
 		j, _ = json.MarshalIndent(G, "", "	")
@@ -178,7 +181,8 @@ READ_CONFIG_ENTRIES:
 
 func defaultConfig() Config {
 	return Config{
-		Version: global.CONFIG_VERSION,
+		Version:    global.CONFIG_VERSION,
+		ConfigPath: getFilePath(),
 		D: ConfigData{
 			ReloadKey: "Insert",
 			StopKey:   "Delete",
