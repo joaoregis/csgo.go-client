@@ -22,6 +22,18 @@ This client don't have any relations to Valve or similar, and use this on online
 
 > Now, configs are available on your default documents folder
 
+### External Request Orchestrator API
+
+This client can receive commands and specific requests via local API orchestrator available when the client is running.
+
+>**Port**: `:61975`\
+>**Method**: `GET`\
+>**Endpoint**: `/orchestrator/request-action/{action-id}`
+
+### Current available Action IDs
+
+- `refresh-cfg` - Forces reload of configuration files of the client
+
 ## Currently known issues
 
 - Name ESP is drawn out of center in some circunstances (visual impact only/ low priority)

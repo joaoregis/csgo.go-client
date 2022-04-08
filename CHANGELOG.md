@@ -1,5 +1,9 @@
 # Changelog for Client Updates
 
+## **v0.2.4 (08-04-2022)**
+
+- Added an external request orchestrator
+
 ## **v0.2.3 (08-04-2022)**
 
 - Add CfgPath on config file
