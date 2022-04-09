@@ -1,6 +1,6 @@
 # Changelog for Client Updates
 
-## **v0.2.5 (08-04-2022)**
+## **v0.2.5 (09-04-2022)**
 
 - Added update route new action to put values in memory config
 
