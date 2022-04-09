@@ -68,7 +68,7 @@ func write() error {
 			j = []byte(global.CONFIG_NAME_WITHOUT_EXT + ":" + global.Encrypt(string(j), global.APP_HASH_ENC_KEY))
 		}
 
-		err = os.WriteFile(path, j, os.ModeAppend)
+		err = os.WriteFile(path, j, 0755)
 		if err != nil {
 			logs.Warn("write err 0")
 			return err
