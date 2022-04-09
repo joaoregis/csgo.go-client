@@ -1,5 +1,9 @@
 # Changelog for Client Updates
 
+## **v0.2.5 (08-04-2022)**
+
+- Added update route new action to put values in memory config
+
 ## **v0.2.4 (08-04-2022)**
 
 - Added an external request orchestrator

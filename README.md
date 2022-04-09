@@ -26,13 +26,15 @@ This client don't have any relations to Valve or similar, and use this on online
 
 This client can receive commands and specific requests via local API orchestrator available when the client is running.
 
->**Port**: `:61975`\
+>**Port**: `:61975`
+>
 >**Method**: `GET`\
->**Endpoint**: `/orchestrator/request-action/{action-id}`
-
-### Current available Action IDs
-
-- `refresh-cfg` - Forces reload of configuration files of the client
+>**Description**: Save config from memory on disk\
+>**Endpoint**: `/orchestrator/request-action/refresh-cfg`
+>
+>**Method**: `PUT`\
+>**Description**: Updates config on memory only (not saving on disk)\
+>**Endpoint**: `/orchestrator/request-action/update-option`
 
 ## Currently known issues
 
