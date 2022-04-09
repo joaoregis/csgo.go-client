@@ -1,1 +1,1 @@
-go run .\cmd\gosource
+go run .\cmd\goclient
