@@ -17,7 +17,7 @@ func initListener() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/orchestrator/request-action/{action}", requestRefreshConfig_GET).Methods("GET")
-	router.HandleFunc("/orchestrator/request-action/{action}", requestRefreshConfig_PUT).Methods("PUT")
+	router.HandleFunc("/orchestrator/request-action/{action}", requestRefreshConfig_PUT).Methods("POST")
 
 	logs.Error(http.ListenAndServe(":"+port, router))
 
@@ -25,8 +25,6 @@ func initListener() {
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:"+port)
-	(*w).Header().Set("Access-Control-Allow-Methods", "GET,PUT")
-	(*w).Header().Set("Access-Control-Allow-Headers", "*")
 }
 
 func requestRefreshConfig_GET(w http.ResponseWriter, r *http.Request) {
