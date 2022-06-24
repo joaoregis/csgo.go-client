@@ -26,6 +26,8 @@ This client don't have any relations to Valve or similar, and use this on online
 
 This client can receive commands and specific requests via local API orchestrator available when the client is running.
 
+After version 0.3.0 you can turn off this feature via configuration file. Change the entry `enable_orchestrator` to `false` and the feature will be disabled until you turn it on again with `true` value. Remember: by default the orchestrator will be off and optional. Turn this on to use with our  external configuration menu.
+
 >**Port**: `:61975`
 >
 >**Method**: `GET`\
@@ -42,8 +44,14 @@ This client can receive commands and specific requests via local API orchestrato
 
 ## CGO Issues relatable commands
 
-```shell
-$go env -w CGO_ENABLED=1
-$go env -w CGO_CFLAGS="-g -O2 -m32 -w"
-$go env -w CGO_CPPFLAGS="-g -O2 -m32 -w"
+`Enable and setup CGO features for GoLang`
+```powershell
+go env -w CGO_ENABLED=1
+go env -w CGO_CFLAGS="-g -O2 -m32 -w"
+go env -w CGO_CPPFLAGS="-g -O2 -m32 -w"
+```
+
+`Allow execution of powershell scripts (needed to use run.ps1 and build.ps1)`
+```powershell
+Set-ExecutionPolicy Unrestricted
 ```
