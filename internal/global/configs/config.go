@@ -14,8 +14,9 @@ import (
 )
 
 type Config struct {
-	Version string     `json:"version"`
-	D       ConfigData `json:"data"`
+	Version      string     `json:"version"`
+	Orchestrator bool       `json:"enable_orchestrator"`
+	D            ConfigData `json:"data"`
 }
 
 func Init() {
@@ -178,7 +179,8 @@ READ_CONFIG_ENTRIES:
 
 func defaultConfig() Config {
 	return Config{
-		Version: global.CONFIG_VERSION,
+		Version:      global.CONFIG_VERSION,
+		Orchestrator: false,
 		D: ConfigData{
 			ReloadKey: "Insert",
 			StopKey:   "Delete",

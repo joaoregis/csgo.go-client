@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"gosource/internal/global"
+	"gosource/internal/global/configs"
 	"gosource/internal/global/logs"
 	"gosource/internal/global/utils"
 	"os"
@@ -38,15 +39,20 @@ func main() {
 	initClientHeader()
 	postInitOpenGL()
 
-	if b := checkHwidAuth(); !b {
-		logs.Info("your hwid is not registered yet. please, submit it to a admin:")
-		logs.Info(utils.GetProtectHwid())
-		logs.Info("\nPress 'Enter' to continue...")
-		bufio.NewReader(os.Stdin).ReadBytes('\n')
-		return
+	if global.CHECK_HWID {
+		if b := checkHwidAuth(); !b {
+			logs.Info("your hwid is not registered yet. please, submit it to a admin:")
+			logs.Info(utils.GetProtectHwid())
+			logs.Info("\nPress 'Enter' to continue...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+			return
+		}
 	}
 
-	go initListener()
+	if configs.G.Orchestrator {
+		go initListener()
+	}
+
 	go clientVMatrixLoop()
 	clientMainLoop()
 	gracefulExit()
